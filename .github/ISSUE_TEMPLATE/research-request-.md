@@ -1,7 +1,7 @@
 ---
-name: Research request
+name: 'Research request '
 about: Research possible solutions for the project
-title: "[research] <title>"
+title: 'Issue default title: [research] <title>'
 labels: ''
 assignees: ''
 
