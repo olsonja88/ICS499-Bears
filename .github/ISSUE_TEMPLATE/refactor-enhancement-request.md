@@ -1,7 +1,7 @@
 ---
 name: Refactor/Enhancement request
 about: Propose a refactor or enhancement to existing code
-title: "[refactor]<title>"
+title: "[refactor] <title>"
 labels: ''
 assignees: ''
 
