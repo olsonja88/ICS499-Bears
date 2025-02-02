@@ -30,9 +30,9 @@ node -v
 npm -v
 ```
 
-### **2️⃣ CD into app + install**
+### **2️⃣ CD into frontend + install**
 ```sh
-cd app
+cd frontend
 npm i
 ```
 
@@ -62,9 +62,9 @@ php -v
 
 ### **3️⃣ Run PHP Built-in Server**
 
-***CD into php***
+***CD into backend***
 ```sh
-cd php
+cd backend
 ```
 ***Run server***
 
@@ -76,4 +76,42 @@ Now open **http://localhost:8000/** in your browser.
 ---
 
 ### **4️⃣ PHP API Example**
-Visit **http://localhost:8000/api/api.php** to see the JSON response.
+Visit **http://localhost:8000/app/api.php** to see the JSON response.
+
+# Proposed File Strcuture
+```
+.
+├── backend/
+│   ├── app/
+│   │   ├── Controllers
+│   │   ├── Models
+│   │   ├── Services
+│   │   ├── Middleware
+│   │   └── Helpers
+│   ├── public/
+│   │   └── index.php
+│   ├── config
+│   ├── database/
+│   │   ├── Migrations/
+│   │   │   └── Schema
+│   │   └── Seed
+│   ├── storage
+│   ├── routes
+│   ├── tests
+│   └── .env
+└── frontend  /
+    ├── app/
+    │   ├── pages
+    │   ├── components
+    │   ├── routes
+    │   ├── hooks
+    │   ├── queries
+    │   ├── api
+    │   ├── utils
+    │   └── styles
+    ├── public/
+    │   └── assets
+    ├── .
+    ├── .
+    └── .
+```
