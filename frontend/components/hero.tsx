@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Hero() {
   return (
     <div className="relative h-screen flex items-center justify-center overflow-hidden">
@@ -15,9 +17,12 @@ export default function Hero() {
         <p className="text-xl mb-8">
           Discover the beauty of global dance traditions
         </p>
-        <button className="bg-white text-black font-bold py-2 px-4 rounded hover:bg-gray-200 transition duration-300">
-          Explore Dances
-        </button>
+
+        <Link href="/dance">
+          <button className="bg-white text-black font-bold py-2 px-4 rounded hover:bg-gray-200 transition duration-300">
+            Explore Dances
+          </button>
+        </Link>
       </div>
     </div>
   );
