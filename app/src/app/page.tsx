@@ -1,6 +1,6 @@
-import Header from "../components/header";
-import Hero from "../components/hero";
-import ContentSection from "../components/content-section";
+import Header from "@/components/header";
+import Hero from "@/components/hero";
+import ContentSection from "@/components/content-section";
 
 export default function Home() {
   return (

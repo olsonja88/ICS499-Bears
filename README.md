@@ -30,9 +30,9 @@ node -v
 npm -v
 ```
 
-### **2️⃣ CD into frontend + install**
+### **2️⃣ CD into app + install**
 ```sh
-cd frontend
+cd app
 npm i
 ```
 
@@ -41,77 +41,3 @@ npm i
 npm run dev  # OR yarn dev
 ```
 Open **http://localhost:3000/** in your browser.
-
-
-## 🐘 PHP Project Setup
-
-### **1️⃣ Install PHP**
-**MacOS/Linux:**
-```sh
-brew install php
-```
-
-**Windows:**
-1. Download PHP from [https://windows.php.net/download/](https://windows.php.net/download/)
-2. Extract PHP (e.g., `C:\php`) and add it to **System Environment Variables > PATH**.
-3. Verify installation:
-```sh
-php -v
-```
-
-
-### **3️⃣ Run PHP Built-in Server**
-
-***CD into backend***
-```sh
-cd backend
-```
-***Run server***
-
-```sh
-php -S localhost:8000 -t public
-```
-Now open **http://localhost:8000/** in your browser.
-
----
-
-### **4️⃣ PHP API Example**
-Visit **http://localhost:8000/app/api.php** to see the JSON response.
-
-# Proposed File Strcuture
-```
-.
-├── backend/
-│   ├── app/
-│   │   ├── Controllers
-│   │   ├── Models
-│   │   ├── Services
-│   │   ├── Middleware
-│   │   └── Helpers
-│   ├── public/
-│   │   └── index.php
-│   ├── config
-│   ├── database/
-│   │   ├── Migrations/
-│   │   │   └── Schema
-│   │   └── Seed
-│   ├── storage
-│   ├── routes
-│   ├── tests
-│   └── .env
-└── frontend  /
-    ├── app/
-    │   ├── pages
-    │   ├── components
-    │   ├── routes
-    │   ├── hooks
-    │   ├── queries
-    │   ├── api
-    │   ├── utils
-    │   └── styles
-    ├── public/
-    │   └── assets
-    ├── .
-    ├── .
-    └── .
-```

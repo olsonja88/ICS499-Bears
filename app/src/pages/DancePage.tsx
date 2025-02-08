@@ -1,6 +1,6 @@
-import DanceLayout from "../../components/dance-layout";
-import DanceCard from "../../components/dance-card";
-import Header from "../../components/header";
+import DanceLayout from "@/components/dance-layout";
+import DanceCard from "@/components/dance-card";
+import Header from "@/components/header";
 
 const dances = [
   {
