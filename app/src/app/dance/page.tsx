@@ -2,44 +2,45 @@ import DanceLayout from "@/components/dance-layout";
 import DanceCard from "@/components/dance-card";
 import Header from "@/components/header";
 
-const dances = [
-  {
-    title: "Flamenco",
-    description: "A passionate and expressive dance from Spain",
-    image: "/placeholder.svg?height=200&width=300",
-  },
-  {
-    title: "Bharatanatyam",
-    description: "A classical Indian dance originating from Tamil Nadu",
-    image: "/placeholder.svg?height=200&width=300",
-  },
-  {
-    title: "Salsa",
-    description: "A lively Latin dance with Cuban and Puerto Rican origins",
-    image: "/placeholder.svg?height=200&width=300",
-  },
-  {
-    title: "Ballet",
-    description:
-      "A graceful and technical dance form from the Italian Renaissance",
-    image: "/placeholder.svg?height=200&width=300",
-  },
-];
+interface Dance {
+  id: number;
+  title: string;
+  description: string;
+  image?: string;
+}
 
-export default function DancePage() {
+async function getDances(): Promise<Dance[]> {
+  try {
+    const res = await fetch("http://localhost:3000/api/dance");
+
+    if (!res.ok) {
+      console.error("API error:", res.status, res.statusText);
+      return []; // Return empty array if API is unavailable
+    }
+
+    return await res.json();
+  } catch (error) {
+    console.error("Fetch error:", error);
+    return []; // Return empty array if fetch fails (e.g., server down)
+  }
+}
+
+export default async function DancePage() {
+  const dances: Dance[] = await getDances();
+
   return (
     <>
       <Header />
       <DanceLayout backgroundImage="/placeholder.svg?height=1080&width=1920">
-        <div className="pt-20">
-          <h1 className="text-4xl font-bold text-white mb-8">
-            Explore Cultural Dances
-          </h1>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {dances.map((dance, index) => (
-              <DanceCard key={index} {...dance} />
-            ))}
-          </div>
+        <div className="pt-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {dances.map((dance: Dance) => (
+            <DanceCard
+              key={dance.id}
+              title={dance.title}
+              description={dance.description}
+              image={dance.image ?? "/placeholder.jpg"}
+            />
+          ))}
         </div>
       </DanceLayout>
     </>
