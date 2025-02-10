@@ -26,16 +26,17 @@ export default function DanceCard({
         <CardTitle>{title}</CardTitle>
         <CardDescription>{description}</CardDescription>
       </CardHeader>
-      <CardContent>
-        <Image
-          src={image || "/placeholder.svg"}
-          alt={title}
-          width={300}
-          height={200}
-          objectFit="cover"
-          className="rounded-md"
-        />
-      </CardContent>
+  <CardContent className="flex justify-center items-center">
+  <Image
+    src={image || "/placeholder.jpg"}
+    alt={title}
+    width={300}
+    height={300}
+    objectFit="cover"
+    className="rounded-md"
+  />
+</CardContent>
+
       <CardFooter>
         <Button variant="outline" className="w-full">
           Learn More
