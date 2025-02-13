@@ -1,39 +1,35 @@
--- Create the database
-CREATE DATABASE IF NOT EXISTS dance_showcases1;
-USE dance_showcases1;
-
 -- Users Table
 CREATE TABLE IF NOT EXISTS users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(50) UNIQUE NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,
-    role ENUM('admin', 'creator', 'viewer') DEFAULT 'viewer',
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT UNIQUE NOT NULL,
+    email TEXT UNIQUE NOT NULL,
+    password_hash TEXT NOT NULL,
+    role TEXT CHECK(role IN ('admin', 'creator', 'viewer')) DEFAULT 'viewer',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Categories Table
 CREATE TABLE IF NOT EXISTS categories (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) UNIQUE NOT NULL,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT UNIQUE NOT NULL,
     description TEXT
 );
 
 -- Countries Table
 CREATE TABLE IF NOT EXISTS countries (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) UNIQUE NOT NULL,
-    code VARCHAR(3) UNIQUE NOT NULL
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT UNIQUE NOT NULL,
+    code TEXT UNIQUE NOT NULL
 );
 
 -- Dances Table
 CREATE TABLE IF NOT EXISTS dances (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(255) NOT NULL,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
     description TEXT,
-    category_id INT,
-    country_id INT,
-    created_by INT DEFAULT NULL,
+    category_id INTEGER,
+    country_id INTEGER,
+    created_by INTEGER DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL ON UPDATE CASCADE,
     FOREIGN KEY (country_id) REFERENCES countries(id) ON DELETE SET NULL ON UPDATE CASCADE,
@@ -42,19 +38,19 @@ CREATE TABLE IF NOT EXISTS dances (
 
 -- Media Table (Videos, Images)
 CREATE TABLE IF NOT EXISTS media (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    dance_id INT,
-    type ENUM('image', 'video') NOT NULL,
-    url VARCHAR(255) NOT NULL,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    dance_id INTEGER,
+    type TEXT CHECK(type IN ('image', 'video')) NOT NULL,
+    url TEXT NOT NULL,
     uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (dance_id) REFERENCES dances(id) ON DELETE CASCADE
 );
 
 -- Comments Table
 CREATE TABLE IF NOT EXISTS comments (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT,
-    dance_id INT,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    dance_id INTEGER,
     content TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
@@ -63,8 +59,8 @@ CREATE TABLE IF NOT EXISTS comments (
 
 -- User Roles (Optional - if multiple roles per user are needed)
 CREATE TABLE IF NOT EXISTS user_roles (
-    user_id INT,
-    role ENUM('admin', 'creator', 'viewer'),
+    user_id INTEGER,
+    role TEXT CHECK(role IN ('admin', 'creator', 'viewer')),
     PRIMARY KEY (user_id, role),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );

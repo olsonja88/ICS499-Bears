@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
+    "migrate": "sqlite3 dev.db < src/lib/migrations/init.sql",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -16,6 +17,8 @@
     "next": "15.1.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7",
     "tailwind-merge": "^3.0.1"
   },
   "devDependencies": {

@@ -1,13 +1,15 @@
-import mysql from "mysql2/promise";
+import sqlite3 from "sqlite3";
+import { open, Database } from "sqlite";
+import path from "path";
 
-const pool = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0,
-});
+let db: Database | null = null;
 
-export default pool;
+export async function getDB() {
+  if (!db) {
+    db = await open({
+      filename: path.join(process.cwd(), "dev.db"), // Stores DB in project root
+      driver: sqlite3.Database,
+    });
+  }
+  return db;
+}
