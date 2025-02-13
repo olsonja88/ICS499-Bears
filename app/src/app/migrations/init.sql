@@ -118,5 +118,4 @@ INSERT INTO dances (title, description, category_id, country_id, created_by) VAL
 ('Modern Flow', 'A contemporary dance performance.', 6, 10, 7),
 ('B-boy Battle', 'A competitive breakdancing event.', 7, 1, 8),
 ('Flamenco Fiesta', 'A traditional flamenco dance.', 8, 5, 9),
-('Swing Revival', 'A lively swing dance.', 9, 1, 10),
-('Irish Folk Dance', 'A vibrant traditional Irish dance.', 10, 2, 11);
+('Swing Revival', 'A lively swing dance.', 9, 1, 10);

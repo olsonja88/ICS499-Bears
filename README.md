@@ -1,6 +1,6 @@
 # ICS499-Bears
 
-# Project Setup Guide
+# Getting Started
 
 ## Git clone the Repo!
 ```sh
@@ -41,3 +41,19 @@ npm i
 npm run dev  # OR yarn dev
 ```
 Open **http://localhost:3000/** in your browser.
+
+# Project Structure
+```
+.
+└── app/
+    ├── public # Static frontend assets
+    └── src/
+        ├── app/
+        │   ├── api # API endpoints, request, & queries
+        │   ├── dance/
+        │   │   └── page.tsx # Dances page 
+        │   ├── page.tsx # Home page
+        │   └── migrations # DB schema migrations and data seeding scripts
+        ├── components # Shared frontend components
+        └── lib # Project utilities and tools
+```
