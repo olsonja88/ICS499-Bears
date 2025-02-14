@@ -1,6 +1,7 @@
 import Header from "@/components/header";
 import Hero from "@/components/hero";
 import ContentSection from "@/components/content-section";
+import Chatbot from "@/components/chatbot";
 
 export default function Home() {
   return (
@@ -18,6 +19,10 @@ export default function Home() {
         imageUrl="/placeholder.svg?height=600&width=800"
         reverse
       />
+      {/* Chatbot Section */}
+      <div className="flex justify-center mt-10 mb-10">
+        <Chatbot />
+      </div>
     </main>
   );
 }
