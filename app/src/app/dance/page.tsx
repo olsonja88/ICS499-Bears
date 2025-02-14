@@ -1,7 +1,7 @@
 import DanceLayout from "@/components/dance-layout";
 import DanceCard from "@/components/dance-card";
 import Header from "@/components/header";
-
+import Chatbot from "@/components/chatbot";
 interface Dance {
   id: number;
   title: string;
@@ -43,6 +43,9 @@ export default async function DancePage() {
           ))}
         </div>
       </DanceLayout>
+      <div className="flex justify-center mt-10 mb-10">
+        <Chatbot />
+      </div>
     </>
   );
 }
