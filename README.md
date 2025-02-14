@@ -109,3 +109,18 @@ app/src/lib/migrations.  If you'd like to make changes to the DB, edit `init.sql
 ├── .env.local # Secrets
 └── dev.db # SQLite DB
 ```
+
+## Contributing
+To contribute to this project, please follow these steps:
+1. Assign yourself an issue from the "Issues" tab. [docs](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/assigning-issues-and-pull-requests-to-other-github-users)
+2. Create a branch off of main for the issue. [docs](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/creating-a-branch-for-an-issue)
+3. Checkout the branch locally.
+```sh
+git fetch origin
+git checkout <branch-name>
+```
+4. Complete work and code changes (commit and push as you go). [video tutorial](https://www.youtube.com/watch?v=9DHjfDuXMGA)
+5. Open a pull request. [docs](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request)
+6. Notify group members under `#review-requests`.
+7. Wait for someone to review and approve.
+8. Merge after review. [docs](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/merging-a-pull-request)
