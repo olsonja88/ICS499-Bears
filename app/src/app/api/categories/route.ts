@@ -1,12 +1,15 @@
-import { NextRequest, NextResponse } from 'next/server';
-import pool from '@/lib/db';
+import { NextResponse } from 'next/server';
+import { getDB } from '@/lib/db';
 
-export async function GET(req: NextRequest) {
+export async function GET() {
     try {
-        const [rows]: any = await pool.query("SELECT * FROM categories");
-        return NextResponse.json(rows, { status: 200 });
+        const db = await getDB();
+        const categories = await db.all("SELECT * FROM categories");
+        return NextResponse.json(categories);
     } catch (error) {
-        console.error("Database error:", error);
-        return NextResponse.json({ success: false, error: (error as Error).message }, { status: 500 });
+        return NextResponse.json(
+            {error: "Database error", details: error },
+            { status: 500 }
+        );
     }
 }
