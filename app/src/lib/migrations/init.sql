@@ -29,21 +29,21 @@ CREATE TABLE IF NOT EXISTS dances (
     description TEXT,
     category_id INTEGER,
     country_id INTEGER,
+    media_id INTEGER,
     created_by INTEGER DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL ON UPDATE CASCADE,
     FOREIGN KEY (country_id) REFERENCES countries(id) ON DELETE SET NULL ON UPDATE CASCADE,
+    FOREIGN KEY (media_id) REFERENCES media(id) ON DELETE SET NULL ON UPDATE CASCADE,
     FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- Media Table (Videos, Images)
 CREATE TABLE IF NOT EXISTS media (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    dance_id INTEGER,
     type TEXT CHECK(type IN ('image', 'video')) NOT NULL,
     url TEXT NOT NULL,
-    uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (dance_id) REFERENCES dances(id) ON DELETE CASCADE
+    uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Comments Table
