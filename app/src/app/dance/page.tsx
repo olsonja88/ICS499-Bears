@@ -2,12 +2,7 @@ import DanceLayout from "@/components/dance-layout";
 import DanceCard from "@/components/dance-card";
 import Header from "@/components/header";
 import Chatbot from "@/components/chatbot";
-interface Dance {
-  id: number;
-  title: string;
-  description: string;
-  image?: string;
-}
+import { Dance } from "@/lib/types";
 
 async function getDances(): Promise<Dance[]> {
   try {
@@ -38,7 +33,7 @@ export default async function DancePage() {
               key={dance.id}
               title={dance.title}
               description={dance.description}
-              image={dance.image ?? "/placeholder.jpg"}
+              image={dance.url ?? "/placeholder.jpg"}
             />
           ))}
         </div>
