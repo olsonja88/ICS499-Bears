@@ -27,57 +27,15 @@ export default async function DancePage() {
     <>
       <Header />
       <DanceLayout backgroundImage="/placeholder.svg?height=1080&width=1920">
-        <div className="pt-20 flex flex-wrap gap-4">
-          {/* Column 1 */}
-          <div className="w-full sm:w-1/2 lg:w-1/3">
-            {dances.map((dance: Dance, index: number) => {
-              if (index % 3 === 0) {
-                return (
-                  <DanceCard
-                    key={dance.id}
-                    title={dance.title}
-                    description={dance.description}
-                    image={dance.url ?? "/placeholder.jpg"}
-                  />
-                );
-              }
-              return null;
-            })}
-          </div>
-
-          {/* Column 2 */}
-          <div className="w-full sm:w-1/2 lg:w-1/3">
-            {dances.map((dance: Dance, index: number) => {
-              if (index % 3 === 1) {
-                return (
-                  <DanceCard
-                    key={dance.id}
-                    title={dance.title}
-                    description={dance.description}
-                    image={dance.url ?? "/placeholder.jpg"}
-                  />
-                );
-              }
-              return null;
-            })}
-          </div>
-          
-          {/* Column 3 */}
-          <div className="w-full sm:w-1/2 lg:w-1/3">
-            {dances.map((dance: Dance, index: number) => {
-              if (index % 3 === 2) {
-                return (
-                  <DanceCard
-                    key={dance.id}
-                    title={dance.title}
-                    description={dance.description}
-                    image={dance.url ?? "/placeholder.jpg"}
-                  />
-                );
-              }
-              return null;
-            })}
-          </div>
+        <div className="pt-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {dances.map((dance: Dance) => (
+            <DanceCard
+              key={dance.id}
+              title={dance.title}
+              description={dance.description}
+              image={dance.url ?? "/placeholder.jpg"}
+            />
+          ))}
         </div>
       </DanceLayout>
       <div className="flex justify-center mt-10 mb-10">

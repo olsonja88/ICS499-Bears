@@ -21,22 +21,21 @@ export default function DanceCard({
   image,
 }: DanceCardProps) {
   return (
-    <Card className="bg-white bg-opacity-80 backdrop-blur-sm transition-all hover:bg-opacity-90">
+    <Card className="bg-white bg-opacity-80 backdrop-blur-sm transition-all hover:bg-opacity-90  flex flex-col justify-between h-full">
       <CardHeader>
         <CardTitle>{title}</CardTitle>
         <CardDescription>{description}</CardDescription>
       </CardHeader>
-  <CardContent className="flex justify-center items-center">
-  <Image
-    src={image || "/placeholder.jpg"}
-    alt={title}
-    width={600}
-    height={0}
-    style={{ objectFit: 'fill' }}
-    className="rounded-md"
-  />
-</CardContent>
-
+      <CardContent className="flex justify-center items-center">
+        <Image
+          src={image || "/placeholder.jpg"}
+          alt={title}
+          width={600}
+          height={0}
+          style={{ objectFit: 'contain' }}
+          className="rounded-md"
+        />
+      </CardContent>
       <CardFooter>
         <Button variant="outline" className="w-full">
           Learn More

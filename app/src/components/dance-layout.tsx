@@ -11,7 +11,7 @@ export default function DanceLayout({
   backgroundImage,
 }: DanceLayoutProps) {
   return (
-    <div className="relative min-h-screen w-full">
+    <div className="relative min-h-screen">
       <div className="absolute inset-0 -z-10">
         <Image
           src={backgroundImage || "/placeholder.svg"}
