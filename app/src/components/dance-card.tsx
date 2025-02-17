@@ -30,9 +30,9 @@ export default function DanceCard({
   <Image
     src={image || "/placeholder.jpg"}
     alt={title}
-    width={300}
-    height={300}
-    objectFit="cover"
+    width={600}
+    height={0}
+    style={{ objectFit: 'fill' }}
     className="rounded-md"
   />
 </CardContent>
