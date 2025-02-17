@@ -1,17 +1,10 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Hero() {
   return (
     <div className="relative h-screen flex items-center justify-center overflow-hidden">
-      <video
-        autoPlay
-        loop
-        muted
-        className="absolute z-0 w-auto min-w-full min-h-full max-w-none"
-      >
-        <source src="/placeholder.mp4" type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
+      <Image src="https://olsonja88.github.io/ICS499-Bears/assets/testimg3.jpg?height=600&width=800" alt="Background" fill style={{ objectFit: "cover" }}/>
       <div className="z-10 text-white text-center">
         <h1 className="text-5xl font-bold mb-4">Experience Cultural Dance</h1>
         <p className="text-xl mb-8">
