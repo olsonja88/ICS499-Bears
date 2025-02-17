@@ -51,11 +51,10 @@ npm -v
 
 #### 4️⃣ Install Dependencies
 ```sh
-cd app
 npm install
 ```
 #### 5️⃣ Get environment variables
-* Create a new file called `.env.local` under `/app`.
+* Create a new file in the root directory called `.env.local`.
 * Copy/paste the contents from Discord `#sprint-planning` chat.
 
 #### 6️⃣ Start the Development Server
@@ -63,6 +62,7 @@ npm install
 npm run dev
 ```
 **Note:** In order to test the app locally, you must follow the "DB Setup" guide.
+**Note:** You must have a valid `.env.local` file for the project to run.
 
 ### DB Setup
 
@@ -85,18 +85,17 @@ SQLite3 is required to manage the local database.
 
 #### 2️⃣ Run Database Migrations
 ```sh
-cd app
 npm run migrate
 ```
 
 **Note:** Migration SQL files are stored in:
 app/src/lib/migrations.  If you'd like to make changes to the DB, edit `init.sql`
+**Note:** Anytime you run `npm run migrate` it will completely wipe out and reinitialize the current DB in your project.
 
 ## Project Structure
 ```
 .
-├── app/
-│   ├── public/ # Static UI assets
+├── public/ # Static UI assets/
 │   └── src/
 │       ├── app/
 │       │   ├── api/ # Endpoints
@@ -104,7 +103,7 @@ app/src/lib/migrations.  If you'd like to make changes to the DB, edit `init.sql
 │       │   ├── . # Pages
 │       │   └── .
 │       ├── components/ # Shared UI components
-│       └── lib/ # General utilities
+│       └── lib/ # General utilities/
 │           └── migrations/ # DB SQL files
 ├── .env.local # Secrets
 └── dev.db # SQLite DB

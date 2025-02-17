@@ -4,7 +4,7 @@ import Image from "next/image";
 export default function Hero() {
   return (
     <div className="relative h-screen flex items-center justify-center overflow-hidden">
-      <Image src="https://olsonja88.github.io/ICS499-Bears/assets/testimg3.jpg?height=600&width=800" alt="Background" fill style={{ objectFit: "cover" }}/>
+      <Image src="https://olsonja88.github.io/ICS499-Bears/assets/testimg3.jpg" alt="Background" fill style={{ objectFit: "cover" }}/>
       <div className="z-10 text-white text-center">
         <h1 className="text-5xl font-bold mb-4">Experience Cultural Dance</h1>
         <p className="text-xl mb-8">

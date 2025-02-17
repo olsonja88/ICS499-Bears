@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "migrate": "sqlite3 dev.db < src/lib/migrations/init.sql",
+    "migrate": "rm dev.db && sqlite3 dev.db < src/lib/migrations/init.sql",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
