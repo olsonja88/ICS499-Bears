@@ -104,14 +104,26 @@ INSERT INTO countries (name, code) VALUES
 ('Japan', 'JPN'),
 ('India', 'IND');
 
+-- Insert sample media
+INSERT INTO media (type, url) VALUES
+('image', 'https://olsonja88.github.io/ICS499-Bears/assets/ballet1.jpg'),
+('image', 'https://olsonja88.github.io/ICS499-Bears/assets/hiphop1.jpg'),
+('image', 'https://olsonja88.github.io/ICS499-Bears/assets/salsa1.jpg'),
+('image', 'https://olsonja88.github.io/ICS499-Bears/assets/tango1.jpg'),
+('image', 'https://olsonja88.github.io/ICS499-Bears/assets/jazz1.jpg'),
+('image', 'https://olsonja88.github.io/ICS499-Bears/assets/contemporary1.jpg'),
+('image', 'https://olsonja88.github.io/ICS499-Bears/assets/bboy1.jpg'),
+('image', 'https://olsonja88.github.io/ICS499-Bears/assets/flamenco1.jpg'),
+('image', 'https://olsonja88.github.io/ICS499-Bears/assets/swing1.jpg');
+
 -- Insert sample dances
-INSERT INTO dances (title, description, category_id, country_id, created_by) VALUES
-('Swan Lake', 'A classic ballet performance.', 1, 3, 2),
-('Street Popping', 'A freestyle hip-hop routine.', 2, 1, 5),
-('Salsa Explosion', 'An energetic salsa performance.', 3, 6, 3),
-('Passionate Tango', 'A fiery tango number.', 4, 6, 4),
-('Broadway Jazz', 'A jazz routine with Broadway influences.', 5, 1, 6),
-('Modern Flow', 'A contemporary dance performance.', 6, 10, 7),
-('B-boy Battle', 'A competitive breakdancing event.', 7, 1, 8),
-('Flamenco Fiesta', 'A traditional flamenco dance.', 8, 5, 9),
-('Swing Revival', 'A lively swing dance.', 9, 1, 10);
+INSERT INTO dances (title, description, category_id, country_id, media_id, created_by) VALUES
+('Swan Lake', 'A classic ballet performance.', 1, 3, 1, 2),
+('Street Popping', 'A freestyle hip-hop routine.', 2, 1, 2, 5),
+('Salsa Explosion', 'An energetic salsa performance.', 3, 6, 3, 3),
+('Passionate Tango', 'A fiery tango number.', 4, 6, 4, 4),
+('Broadway Jazz', 'A jazz routine with Broadway influences.', 5, 1, 5, 6),
+('Modern Flow', 'A contemporary dance performance.', 6, 10, 6, 7),
+('B-boy Battle', 'A competitive breakdancing event.', 7, 1, 7, 8),
+('Flamenco Fiesta', 'A traditional flamenco dance.', 8, 5, 8, 9),
+('Swing Revival', 'A lively swing dance.', 9, 1, 9, 10);
