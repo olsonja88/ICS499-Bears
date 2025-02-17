@@ -2,6 +2,8 @@ import DanceLayout from "@/components/dance-layout";
 import DanceCard from "@/components/dance-card";
 import Header from "@/components/header";
 import Chatbot from "@/components/chatbot";
+import { Button } from "@/components/button";
+import Link from "next/link";
 interface Dance {
   id: number;
   title: string;
@@ -32,6 +34,13 @@ export default async function DancePage() {
     <>
       <Header />
       <DanceLayout backgroundImage="/placeholder.svg?height=1080&width=1920">
+        <div className="flex justify-center m-10">
+          <Link href="/create-dance">
+            <Button type="button" className="flex-1">
+              Create
+            </Button>
+          </Link>
+        </div>
         <div className="pt-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {dances.map((dance: Dance) => (
             <DanceCard

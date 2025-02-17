@@ -9,7 +9,7 @@ interface SelectBoxProps {
   onChange: (selected: string[]) => void
 }
 
-export function SelectBox({ label, options, selected, onChange }: SelectBoxProps) {
+export default function SelectBox({ label, options, selected, onChange }: SelectBoxProps) {
   const [isOpen, setIsOpen] = useState(false)
 
   const toggleOption = (option: string) => {
