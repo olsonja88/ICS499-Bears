@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "migrate": "rm dev.db && sqlite3 dev.db < src/lib/migrations/init.sql",
+    "migrate:win": "if exist dev.db del dev.db && sqlite3 dev.db < src/lib/migrations/init.sql",
+    "migrate:unix": "rm -f dev.db && sqlite3 dev.db < src/lib/migrations/init.sql",
+    "migrate": "npm run migrate:win || npm run migrate:unix",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
