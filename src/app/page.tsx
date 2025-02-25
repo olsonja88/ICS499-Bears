@@ -24,7 +24,6 @@ export default function Home() {
       {/* User Management Section */}
       <div className="flex justify-center mt-10 mb-10">
         <div className="w-full max-w-2xl">
-          <h2 className="text-2xl font-semibold text-center">User Management</h2>
           <UserList />
         </div>
       </div>
