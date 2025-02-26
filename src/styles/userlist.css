@@ -206,6 +206,12 @@
     transition: background-color 0.2s;
 }
 
+.active-page {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+}
+
 /* Disabled Pagination Button */
 .pagination button:disabled {
     background-color: #cccccc;
@@ -213,9 +219,13 @@
 }
 
 /* Pagination Active Page */
-.pagination .active-page {
+.pagination button.active-page {
     background-color: #0056b3;
+    color: white;
+    font-weight: bold;
+    border: 1px solid #0056b3;
 }
+
 
 /* Pagination Number Styling */
 .pagination span {
