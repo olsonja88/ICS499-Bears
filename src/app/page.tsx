@@ -2,6 +2,7 @@ import Header from "@/components/header";
 import Hero from "@/components/hero";
 import ContentSection from "@/components/content-section";
 import Chatbot from "@/components/chatbot";
+import UserList from "@/components/userlist";
 
 export default function Home() {
   return (
@@ -19,6 +20,14 @@ export default function Home() {
         imageUrl="https://olsonja88.github.io/ICS499-Bears/assets/testimg2.jpg"
         reverse
       />
+
+      {/* User Management Section */}
+      <div className="flex justify-center mt-10 mb-10">
+        <div className="w-full max-w-2xl">
+          <UserList />
+        </div>
+      </div>
+
       {/* Chatbot Section */}
       <div className="flex justify-center mt-10 mb-10">
         <Chatbot />
