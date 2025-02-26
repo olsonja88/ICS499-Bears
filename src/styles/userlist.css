@@ -7,6 +7,10 @@
     width: 100%;
     max-width: 800px;
     margin: 20px auto;
+    min-height: 400px; /* Ensure the box stays in place */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Keeps content centered */
 }
 
 /* Heading */
@@ -55,6 +59,8 @@
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
+	transition: min-height 0.3s ease-in-out;
+    min-height: 250px;
 }
 
 .user-table th, .user-table td {
@@ -99,4 +105,35 @@
 
 .delete-user:hover {
     background-color: #c9302c;
+}
+
+/* Search Bar */
+.search-bar {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    margin-bottom: 10px;
+    transition: all 0.2s ease-in-out;
+}
+
+/* Table Header Clickable for Sorting */
+.user-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+    cursor: pointer;
+    user-select: none;
+}
+
+.user-table th:hover {
+    background-color: #e0e0e0;
+}
+
+.no-results {
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    color: #666;
+    margin-top: 20px;
 }
