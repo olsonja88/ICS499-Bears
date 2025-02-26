@@ -26,8 +26,13 @@ const UserList: React.FC = () => {
 	const [newUser, setNewUser] = useState({ username: "", email: "", password_hash: "", role: "viewer" });
 
 	useEffect(() => {
-		fetchUsers(currentPage);
+		const timeout = setTimeout(() => {
+			fetchUsers();
+		}, 2000); // Waits 2 seconds before fetching users
+	
+		return () => clearTimeout(timeout); // Cleanup function
 	}, []);
+	
 
 	// Fetch Users (Preserve Current Page)
 	const fetchUsers = async (page = currentPage) => {
