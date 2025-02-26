@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link"; // Import Link from Next.js
 import { Button } from "./button";
 import {
   Card,
@@ -10,18 +11,16 @@ import {
 } from "./card";
 
 interface DanceCardProps {
+  id: string; // Added dance ID
   title: string;
   description: string;
   image: string;
 }
 
-export default function DanceCard({
-  title,
-  description,
-  image,
-}: DanceCardProps) {
+export default function DanceCard({ id, title, description, image }: DanceCardProps) {
+  console.log("Dance Data in DanceCard:", { id, title });
   return (
-    <Card className="bg-white bg-opacity-80 backdrop-blur-sm transition-all hover:bg-opacity-90  flex flex-col justify-between h-full">
+    <Card className="bg-white bg-opacity-80 backdrop-blur-sm transition-all hover:bg-opacity-90 flex flex-col justify-between h-full">
       <CardHeader>
         <CardTitle>{title}</CardTitle>
         <CardDescription>{description}</CardDescription>
@@ -32,14 +31,17 @@ export default function DanceCard({
           alt={title}
           width={600}
           height={0}
-          style={{ objectFit: 'contain' }}
+          style={{ objectFit: "contain" }}
           className="rounded-md"
         />
       </CardContent>
       <CardFooter>
-        <Button variant="outline" className="w-full">
-          Learn More
-        </Button>
+        {/* Link to Dance Details page */}
+        <Link href={`/dance/${id}`} passHref>
+          <Button variant="outline" className="w-full">
+            Learn More
+          </Button>
+        </Link>
       </CardFooter>
     </Card>
   );
