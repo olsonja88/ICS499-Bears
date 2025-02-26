@@ -20,7 +20,7 @@ const UserList: React.FC = () => {
 
 	// Pagination State
 	const [currentPage, setCurrentPage] = useState(1);
-	const usersPerPage = 1; // Number of users per page
+	const usersPerPage = 5; // Number of users per page
 
 	// New User State
 	const [newUser, setNewUser] = useState({ username: "", email: "", password_hash: "", role: "viewer" });
