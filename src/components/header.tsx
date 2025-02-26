@@ -76,7 +76,7 @@ export default function Header() {
                 Home
               </Link>
               <Link
-                href="/dance"
+                href="/dances"
                 className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
               >
                 Dances
