@@ -1,18 +1,18 @@
-/* Container Styling */
+/* General User Management Container */
 .user-management {
     background-color: white;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
     padding: 20px;
     width: 105%;
-    max-width: 900px; /* Slightly wider for better table display */
+    max-width: 900px;
     margin: 20px auto;
     min-height: 500px;
     display: flex;
     flex-direction: column;
 }
 
-/* Heading */
+/* Header */
 .user-management h2 {
     text-align: center;
     font-size: 24px;
@@ -32,7 +32,7 @@
     transition: all 0.3s ease-in-out;
 }
 
-/* User Form */
+/* Add User Form */
 .user-form {
     display: flex;
     flex-wrap: wrap;
@@ -48,7 +48,7 @@
     font-size: 14px;
 }
 
-/* Buttons */
+/* Add User Button */
 .user-form button {
     background-color: #007bff;
     color: white;
@@ -57,24 +57,25 @@
     border-radius: 5px;
     cursor: pointer;
     font-size: 14px;
+    transition: background-color 0.2s;
 }
 
 .user-form button:hover {
     background-color: #0056b3;
 }
 
-/* Table Styling */
+/* User Table */
 .user-table {
-	color:black;
+    color: black;
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
-    min-height: 350px; /* ADJUST TO FIT WITH # OF USERS PER PAGE*/
+    min-height: 350px; /* Keeps table height stable */
     display: block;
-    overflow-x: none; /* Prevents horizontal scrolling */
+    overflow-x: auto;
 }
 
-/* Ensuring Proper Table Layout */
+/* Table Structure */
 .user-table table {
     width: 100%;
     border-collapse: collapse;
@@ -86,40 +87,18 @@
     border: 1px solid #ddd;
     padding: 10px;
     text-align: left;
-    white-space: nowrap; /* Prevents text wrapping */
+    white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis; /* Truncates long content */
+    text-overflow: ellipsis; /* "..." on overflow */
 }
 
-/* Ensure long text is truncated */
-.user-table td {
-    max-width: 200px; /* Prevents table from stretching */
-    overflow: hidden;
-    white-space: nowrap; /* Keeps content in one line */
-    text-overflow: ellipsis; /* Adds "..." to cut-off text */
-}
-
-/* Tooltip effect to show full content on hover for username and email */
-.user-table td:nth-child(1):hover, .user-table td:nth-child(2):hover {
-    overflow: visible;
-    white-space: normal; /* Allows multi-line text on hover */
-    word-wrap: break-word; /* Ensures long words break properly */
-    position: relative;
-    z-index: 2;
-    background-color: white;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
-    padding: 5px;
-}
-
-
-/* Set proper column widths */
+/* Column Widths */
 .user-table th:nth-child(1), .user-table td:nth-child(1) { width: 100%; } /* Username */
 .user-table th:nth-child(2), .user-table td:nth-child(2) { width: 100%; } /* Email */
 .user-table th:nth-child(3), .user-table td:nth-child(3) { width: 40%; } /* Role */
 .user-table th:nth-child(4), .user-table td:nth-child(4) { width: 100%; text-align: center; } /* Actions */
 
-
-/* Table Header (Clickable for Sorting) */
+/* Sorting Indicator */
 .user-table th {
     background-color: #f4f4f4;
     font-weight: bold;
@@ -131,32 +110,39 @@
     background-color: #e0e0e0;
 }
 
+/* Hover Effect for Long Text */
+.user-table td:nth-child(1):hover, .user-table td:nth-child(2):hover {
+    overflow: visible;
+    white-space: normal;
+    word-wrap: break-word;
+    position: relative;
+    z-index: 2;
+    background-color: white;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+    padding: 5px;
+}
+
 /* Action Buttons */
 .action-buttons {
     display: flex;
     justify-content: center;
-    align-items: center; /* Ensures buttons are aligned properly */
+    align-items: center;
     gap: 10px;
 }
+
 /* Toggle Role Button */
 .toggle-role {
     background-color: #f0ad4e;
     color: white;
-    padding: 8px 14px; /* Increased padding for better clickability */
-    font-size: 14px;  /* Slightly larger text */
+    padding: 8px 14px;
+    font-size: 14px;
     cursor: pointer;
     white-space: nowrap;
     transition: background-color 0.2s;
-	height: 36px;
-	display: flex;
-	align-items: center;
+    height: 36px;
+    display: flex;
+    align-items: center;
     justify-content: center;
-}
-
-.toggle-role, .delete-user {
-    padding: 5px 8px; /* Reduce button padding */
-    font-size: 12px;  /* Reduce font size */
-    white-space: nowrap; /* Prevents text wrapping */
 }
 
 .toggle-role:hover {
@@ -167,16 +153,17 @@
 .delete-user {
     background-color: #d9534f;
     color: white;
-    padding: 8px 14px; /* Increased padding */
+    padding: 8px 14px;
     font-size: 14px;
     cursor: pointer;
     white-space: nowrap;
     transition: background-color 0.2s;
-	height: 36px;
-	display: flex;
-	align-items: center;
+    height: 36px;
+    display: flex;
+    align-items: center;
     justify-content: center;
 }
+
 .delete-user:hover {
     background-color: #c9302c;
 }
@@ -192,6 +179,7 @@
     animation: fadeIn 0.5s ease-in-out forwards;
 }
 
+/* Fade In Effect */
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
@@ -206,6 +194,7 @@
     gap: 10px;
 }
 
+/* Pagination Button Styling */
 .pagination button {
     background-color: #007bff;
     color: white;
@@ -217,17 +206,24 @@
     transition: background-color 0.2s;
 }
 
+/* Disabled Pagination Button */
 .pagination button:disabled {
     background-color: #cccccc;
     cursor: not-allowed;
 }
 
+/* Pagination Active Page */
+.pagination .active-page {
+    background-color: #0056b3;
+}
+
+/* Pagination Number Styling */
 .pagination span {
     font-size: 16px;
     font-weight: bold;
 }
 
-/* Responsive Design for Small Screens */
+/* Responsive Design */
 @media (max-width: 768px) {
     .user-form {
         flex-direction: column;
@@ -245,8 +241,8 @@
     }
 }
 
-/* Ensure all rows have the same height */
+/* Maintain Row Heights */
 .user-table tbody tr {
-    height: 50px; /* Set a fixed height for rows */
-    display: table-row; /* Ensures consistent alignment */
+    height: 50px;
+    display: table-row;
 }

@@ -35,7 +35,7 @@ const UserList: React.FC = () => {
         setFilteredUsers(data);
     };
 
-    // 🔍 Handle Search
+    // Handle Search
     useEffect(() => {
         const lowercasedSearch = search.toLowerCase();
         setFilteredUsers(
@@ -47,7 +47,7 @@ const UserList: React.FC = () => {
         setCurrentPage(1); // Reset to first page on search
     }, [search, users]);
 
-    // 🔄 Handle Sorting (Case-Insensitive)
+    // Handle Sorting (Case-Insensitive)
     const handleSort = (field: keyof User) => {
         const newSortOrder = sortField === field && sortOrder === "asc" ? "desc" : "asc";
         setSortField(field);
@@ -83,7 +83,7 @@ const UserList: React.FC = () => {
         }
     };
 
-    // 🔄 Handle Role Update (Cycle Through Roles)
+    // Handle Role Update (Cycle Through Roles)
     const handleUpdate = async (user: User) => {
         const roles = ["viewer", "creator", "admin"];
         const currentIndex = roles.indexOf(user.role);
@@ -94,7 +94,7 @@ const UserList: React.FC = () => {
         fetchUsers();
     };
 
-    // 🗑️ Handle Delete User
+    // Handle Delete User
     const handleDelete = async (id: number) => {
         await deleteUser(id);
         fetchUsers();
@@ -115,7 +115,7 @@ const UserList: React.FC = () => {
         <div className="user-management">
             <h2>User Management</h2>
 
-            {/* 🔍 Search Bar */}
+            {/* Search Bar */}
             <input
                 type="text"
                 placeholder="Search by username or email"
@@ -124,7 +124,7 @@ const UserList: React.FC = () => {
                 className="search-bar"
             />
 
-            {/* 🆕 Add User Form */}
+            {/* Add User Form */}
             <div className="user-form">
                 <input 
                     type="text" placeholder="Username" 
