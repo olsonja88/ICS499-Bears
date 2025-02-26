@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { getUsers, createUser, updateUser, deleteUser } from "@/app/api/api";
-import "../styles/userlist.css";; // Import the CSS file
+import "../styles/userlist.css"; // Import the CSS file
 
 interface User {
     id: number;
@@ -17,6 +17,12 @@ const UserList: React.FC = () => {
     const [search, setSearch] = useState("");
     const [sortField, setSortField] = useState<keyof User>("username");
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+
+    // Pagination State
+    const [currentPage, setCurrentPage] = useState(1);
+    const usersPerPage = 5; // Number of users per page
+
+    // New User State
     const [newUser, setNewUser] = useState({ username: "", email: "", password_hash: "", role: "viewer" });
 
     useEffect(() => {
@@ -26,10 +32,10 @@ const UserList: React.FC = () => {
     const fetchUsers = async () => {
         const data = await getUsers();
         setUsers(data);
-        setFilteredUsers(data); // Initialize filtered list
+        setFilteredUsers(data);
     };
 
-    // 🔍 Handle Search (Case-Insensitive)
+    // 🔍 Handle Search
     useEffect(() => {
         const lowercasedSearch = search.toLowerCase();
         setFilteredUsers(
@@ -38,6 +44,7 @@ const UserList: React.FC = () => {
                 user.email.toLowerCase().includes(lowercasedSearch)
             )
         );
+        setCurrentPage(1); // Reset to first page on search
     }, [search, users]);
 
     // 🔄 Handle Sorting (Case-Insensitive)
@@ -56,18 +63,27 @@ const UserList: React.FC = () => {
         });
 
         setFilteredUsers(sortedUsers);
+        setCurrentPage(1); // Reset to first page after sorting
     };
 
-    const handleCreate = async () => {
-        if (!newUser.username || !newUser.email || !newUser.password_hash) {
-            alert("Please fill in all fields.");
-            return;
+    // Pagination Logic
+    const indexOfLastUser = currentPage * usersPerPage;
+    const indexOfFirstUser = indexOfLastUser - usersPerPage;
+    const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
+
+    const nextPage = () => {
+        if (currentPage < Math.ceil(filteredUsers.length / usersPerPage)) {
+            setCurrentPage(currentPage + 1);
         }
-        await createUser(newUser);
-        setNewUser({ username: "", email: "", password_hash: "", role: "viewer" });
-        fetchUsers();
     };
 
+    const prevPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
+
+    // 🔄 Handle Role Update (Cycle Through Roles)
     const handleUpdate = async (user: User) => {
         const roles = ["viewer", "creator", "admin"];
         const currentIndex = roles.indexOf(user.role);
@@ -78,8 +94,20 @@ const UserList: React.FC = () => {
         fetchUsers();
     };
 
+    // 🗑️ Handle Delete User
     const handleDelete = async (id: number) => {
         await deleteUser(id);
+        fetchUsers();
+    };
+
+    // ➕ Handle Add User
+    const handleCreate = async () => {
+        if (!newUser.username || !newUser.email || !newUser.password_hash) {
+            alert("Please fill in all fields.");
+            return;
+        }
+        await createUser(newUser);
+        setNewUser({ username: "", email: "", password_hash: "", role: "viewer" });
         fetchUsers();
     };
 
@@ -96,7 +124,7 @@ const UserList: React.FC = () => {
                 className="search-bar"
             />
 
-            {/* Create User Form */}
+            {/* 🆕 Add User Form */}
             <div className="user-form">
                 <input 
                     type="text" placeholder="Username" 
@@ -117,37 +145,56 @@ const UserList: React.FC = () => {
             </div>
 
             {/* User Table */}
-            {filteredUsers.length > 0 ? (
-                <table className="user-table">
-                    <thead>
-                        <tr>
-                            <th onClick={() => handleSort("username")}>Username {sortField === "username" ? (sortOrder === "asc" ? "▲" : "▼") : ""}</th>
-                            <th onClick={() => handleSort("email")}>Email {sortField === "email" ? (sortOrder === "asc" ? "▲" : "▼") : ""}</th>
-                            <th onClick={() => handleSort("role")}>Role {sortField === "role" ? (sortOrder === "asc" ? "▲" : "▼") : ""}</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {filteredUsers.map((user) => (
-                            <tr key={user.id}>
-                                <td>{user.username}</td>
-                                <td>{user.email}</td>
-                                <td>{user.role}</td>
-                                <td className="action-buttons">
-                                    <button onClick={() => handleUpdate(user)} className="toggle-role">
-                                        Toggle Role
-                                    </button>
-                                    <button onClick={() => handleDelete(user.id)} className="delete-user">
-                                        Delete
-                                    </button>
-                                </td>
+            <div className="user-table">
+                {currentUsers.length > 0 ? (
+                    <table>
+                        <thead>
+                            <tr>
+                                <th onClick={() => handleSort("username")}>
+                                    Username {sortField === "username" ? (sortOrder === "asc" ? "▲" : "▼") : ""}
+                                </th>
+                                <th onClick={() => handleSort("email")}>
+                                    Email {sortField === "email" ? (sortOrder === "asc" ? "▲" : "▼") : ""}
+                                </th>
+                                <th onClick={() => handleSort("role")}>
+                                    Role {sortField === "role" ? (sortOrder === "asc" ? "▲" : "▼") : ""}
+                                </th>
+                                <th>Actions</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
-            ) : (
-                <p className="no-results">No users found</p>
-            )}
+                        </thead>
+                        <tbody>
+                            {currentUsers.map((user) => (
+                                <tr key={user.id}>
+                                    <td>{user.username}</td>
+                                    <td>{user.email}</td>
+                                    <td>{user.role}</td>
+                                    <td className="action-buttons">
+                                        <button onClick={() => handleUpdate(user)} className="toggle-role">
+                                            Toggle Role
+                                        </button>
+                                        <button onClick={() => handleDelete(user.id)} className="delete-user">
+                                            Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                ) : (
+                    <p className="no-results">No users found</p>
+                )}
+            </div>
+
+            {/* Pagination Buttons */}
+            <div className="pagination">
+                <button onClick={prevPage} disabled={currentPage === 1}>
+                    ◀ Previous
+                </button>
+                <span>Page {currentPage} of {Math.ceil(filteredUsers.length / usersPerPage)}</span>
+                <button onClick={nextPage} disabled={currentPage >= Math.ceil(filteredUsers.length / usersPerPage)}>
+                    Next ▶
+                </button>
+            </div>
         </div>
     );
 };
