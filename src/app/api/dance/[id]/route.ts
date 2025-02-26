@@ -1,8 +1,16 @@
 import { NextResponse } from "next/server";
 import { getDB } from "@/lib/db";
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function GET(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
   try {
+    const id = await params.id;
+    if (!id) {
+      return NextResponse.json({ error: "Dance ID is required" }, { status: 400 });
+    }
+
     const db = await getDB();
     const query = `
       SELECT 
@@ -21,7 +29,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
       LEFT JOIN media ON dances.media_id = media.id
       WHERE dances.id = ?;`;
 
-    const row = await db.get(query, [params.id]);
+    const row = await db.get(query, [id]);
 
     if (!row) {
       return NextResponse.json({ error: "Dance not found" }, { status: 404 });
@@ -31,11 +39,11 @@ export async function GET(request: Request, { params }: { params: { id: string }
       id: row.dance_id,
       title: row.title,
       description: row.description || "",
-      category_id: row.category_id,
-      country_id: row.country_id,
-      media: row.media_url ? [{ type: row.media_type, url: row.media_url }] : [],
-      created_by: row.created_by,
-      created_at: row.created_at
+      categoryId: row.category_id,
+      countryId: row.country_id,
+      url: row.media_url || undefined,
+      createdBy: row.created_by?.toString(),
+      createdAt: row.created_at
     };
 
     return NextResponse.json(dance);

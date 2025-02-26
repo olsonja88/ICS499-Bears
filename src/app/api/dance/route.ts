@@ -20,13 +20,16 @@ export async function GET() {
       FROM dances
       LEFT JOIN media ON dances.media_id = media.id;`;
 
-      const rows = await db.all(query);
+    const rows = await db.all(query);
 
     const dances: Dance[] = rows.map(row => ({
-      id: row.dance_id, 
+      id: row.dance_id,
       title: row.title,
       description: row.description || "",
-      url: row.media_url || undefined
+      categoryId: row.category_id,
+      countryId: row.country_id,
+      url: row.media_url || undefined,
+      createdBy: row.created_by?.toString() || undefined
     }));
 
     return NextResponse.json(dances);
@@ -77,9 +80,9 @@ export async function PUT(request: Request) {
     mediaId 
   } = body;
 
-  if (!title || !description || !categoryId || !countryId || !createdBy) {
+  if (!title || !description || !categoryId || !countryId) {
     return NextResponse.json(
-      { error: "All fields are required for PUT request" },
+      { error: "Required fields are missing" },
       { status: 400 }
     );
   }
@@ -140,6 +143,10 @@ export async function PATCH(request: Request) {
     if (updates.countryId !== undefined) {
       updateFields.push('country_id = ?');
       values.push(updates.countryId);
+    }
+    if (updates.createdBy !== undefined) {
+      updateFields.push('created_by = ?');
+      values.push(updates.createdBy);
     }
     if (updates.mediaId !== undefined) {
       updateFields.push('media_id = ?');

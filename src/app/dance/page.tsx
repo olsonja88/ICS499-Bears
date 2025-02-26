@@ -6,7 +6,7 @@ import { Dance } from "@/lib/types";
 
 async function getDances(): Promise<Dance[]> {
   try {
-    const res = await fetch("http://localhost:3000/api/dances`");
+    const res = await fetch("http://localhost:3000/api/dance");
 
     if (!res.ok) {
       console.error("API error:", res.status, res.statusText);
