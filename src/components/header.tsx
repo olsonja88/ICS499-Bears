@@ -1,10 +1,52 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { jwtDecode } from "jwt-decode";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const router = useRouter(); // Initialize router
+  useEffect(() => {
+    // Function to check if JWT is valid
+    const checkAuth = () => {
+      const token = localStorage.getItem("token");
+
+      if (token) {
+        try {
+          const decoded: any = jwtDecode(token);
+          const isExpired = decoded.exp * 1000 < Date.now(); // Convert exp to milliseconds
+
+          if (isExpired) {
+            console.log("Token expired, logging out...");
+            localStorage.removeItem("token");
+            localStorage.removeItem("isLoggedIn");
+            setIsLoggedIn(false);
+          } else {
+            setIsLoggedIn(true);
+          }
+        } catch (error) {
+          console.log("Invalid token, logging out...");
+          localStorage.removeItem("token");
+          localStorage.removeItem("isLoggedIn");
+          setIsLoggedIn(false);
+        }
+      } else {
+        setIsLoggedIn(false);
+      }
+    };
+
+    checkAuth(); // Run on mount
+
+    // Listen for login/logout updates
+    window.addEventListener("storage", checkAuth);
+
+    return () => {
+      window.removeEventListener("storage", checkAuth);
+    };
+  }, []);
 
   return (
     <header className="fixed w-full z-50">
@@ -31,17 +73,39 @@ export default function Header() {
                   Dances
                 </Link>
                 <Link
-                  href="#"
+                  href="/maps"
                   className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                 >
-                  Workshops
+                  Dance Map
                 </Link>
                 <Link
-                  href="#"
+                  href="/about"
                   className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                 >
                   About
                 </Link>
+
+                {!isLoggedIn ? (
+                  <Link
+                    href="/login"
+                    className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                  >
+                    Login
+                  </Link>
+                ) : (
+                  <button
+                    onClick={() => {
+                      localStorage.removeItem("token");
+                      localStorage.removeItem("isLoggedIn");
+                      setIsLoggedIn(false);
+                      window.dispatchEvent(new Event("storage")); // Notify all tabs
+                      router.push("/login");
+                    }}
+                    className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                  >
+                    Logout
+                  </button>
+                )}
               </div>
             </div>
             <div className="md:hidden">
@@ -82,17 +146,39 @@ export default function Header() {
                 Dances
               </Link>
               <Link
-                href="#"
+                href="/maps"
                 className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
               >
-                Workshops
+                Dance Map
               </Link>
               <Link
-                href="#"
+                href="/about"
                 className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
               >
                 About
               </Link>
+
+              {!isLoggedIn ? (
+                <Link
+                  href="/login"
+                  className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+                >
+                  Login
+                </Link>
+              ) : (
+                <button
+                  onClick={() => {
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("isLoggedIn");
+                    setIsLoggedIn(false);
+                    window.dispatchEvent(new Event("storage"));
+                    router.push("/login");
+                  }}
+                  className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+                >
+                  Logout
+                </button>
+              )}
             </div>
           </div>
         )}
