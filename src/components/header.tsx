@@ -1,10 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const storedAuth = localStorage.getItem("isLoggedIn") === "true";
+    setIsLoggedIn(storedAuth);
+  }, []);
 
   return (
     <header className="fixed w-full z-50">
@@ -31,17 +37,35 @@ export default function Header() {
                   Dances
                 </Link>
                 <Link
-                  href="#"
+                  href="/maps"
                   className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                 >
-                  Workshops
+                  Dance Map
                 </Link>
                 <Link
-                  href="#"
+                  href="/about"
                   className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                 >
                   About
                 </Link>
+
+                {!isLoggedIn ? (
+                  <>
+                    <Link
+                      href="/login"
+                      className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                    >
+                      Login
+                    </Link>
+                  </>
+                ) : (
+                  <Link
+                    href="/logout"
+                    className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                  >
+                    Logout
+                  </Link>
+                )}
               </div>
             </div>
             <div className="md:hidden">
@@ -82,17 +106,35 @@ export default function Header() {
                 Dances
               </Link>
               <Link
-                href="#"
+                href="/maps"
                 className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
               >
-                Workshops
+                Dance Map
               </Link>
               <Link
-                href="#"
+                href="/about"
                 className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
               >
                 About
               </Link>
+
+              {!isLoggedIn ? (
+                <>
+                  <Link
+                    href="/login"
+                    className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+                  >
+                    Login
+                  </Link>
+                </>
+              ) : (
+                <Link
+                  href="/logout"
+                  className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+                >
+                  Logout
+                </Link>
+              )}
             </div>
           </div>
         )}
