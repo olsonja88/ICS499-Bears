@@ -1,6 +1,49 @@
 "use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+
 const RegistrationForm = () => {
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const router = useRouter();
+
+  const handleRegister = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setError(""); // Clear errors
+    setSuccess(""); // Clear previous success messages
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/auth/registration", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Registration failed");
+      }
+
+      setSuccess("Account created successfully! Redirecting...");
+
+      // Redirect to login after a short delay
+      setTimeout(() => router.push("/login"), 2000);
+    } catch (err: any) {
+      setError(err.message);
+    }
+  };
+
   return (
     <main className="min-h-screen flex flex-col items-center justify-center px-4">
       <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
@@ -8,19 +51,28 @@ const RegistrationForm = () => {
           Create an Account
         </h2>
 
-        <form className="space-y-4">
-          {/* Full Name */}
+        {error && (
+          <p className="text-red-600 text-sm text-center mb-4">{error}</p>
+        )}
+        {success && (
+          <p className="text-green-600 text-sm text-center mb-4">{success}</p>
+        )}
+
+        <form className="space-y-4" onSubmit={handleRegister}>
+          {/* Username */}
           <div>
             <label
-              htmlFor="name"
+              htmlFor="username"
               className="block text-sm font-medium text-gray-700"
             >
-              Full Name
+              Username
             </label>
             <input
               type="text"
-              id="name"
-              name="name"
+              id="username"
+              name="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
               required
             />
@@ -38,6 +90,8 @@ const RegistrationForm = () => {
               type="email"
               id="email"
               name="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
               required
             />
@@ -55,6 +109,8 @@ const RegistrationForm = () => {
               type="password"
               id="password"
               name="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
               required
             />
@@ -72,6 +128,8 @@ const RegistrationForm = () => {
               type="password"
               id="confirm-password"
               name="confirm-password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
               className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
               required
             />
