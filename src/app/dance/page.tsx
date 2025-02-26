@@ -31,6 +31,7 @@ export default async function DancePage() {
           {dances.map((dance: Dance) => (
             <DanceCard
               key={dance.id}
+              id={dance.id.toString()} // Fixed: Now passing the correct id
               title={dance.title}
               description={dance.description}
               image={dance.url ?? "/placeholder.jpg"}
