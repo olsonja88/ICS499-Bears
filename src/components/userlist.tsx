@@ -30,9 +30,23 @@ const UserList: React.FC = () => {
     }, []);
 
     const fetchUsers = async () => {
-        const data = await getUsers();
-        setUsers(data);
-        setFilteredUsers(data);
+        try {
+            const data = await getUsers();
+            console.log("Fetched Users:", data); // Debugging output
+    
+            if (Array.isArray(data)) {
+                setUsers(data);
+                setFilteredUsers(data);
+            } else {
+                console.error("Unexpected API response:", data);
+                setUsers([]); // Reset users to an empty array if the response is invalid
+                setFilteredUsers([]);
+            }
+        } catch (error) {
+            console.error("Error fetching users:", error);
+            setUsers([]); // Ensure users do not become undefined
+            setFilteredUsers([]);
+        }
     };
 
     // Handle Search
