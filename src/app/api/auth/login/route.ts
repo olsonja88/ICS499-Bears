@@ -17,7 +17,7 @@ export async function POST(req: Request) {
       }
   
       const db = await getDB();
-      const user = await db.get("SELECT id, username, password_hash FROM users WHERE username = ?", [username]);
+      const user = await db.get("SELECT id, username, password_hash, role FROM users WHERE username = ?", [username]);
   
       if (!user) {
         return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
@@ -27,8 +27,8 @@ export async function POST(req: Request) {
       if (!isMatch) {
         return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
       }
-  
-      const token = jwt.sign({ userId: user.id, username: user.username }, process.env.JWT_SECRET!, {
+
+      const token = jwt.sign({ userId: user.id, username: user.username, role: user.role}, process.env.JWT_SECRET!, {
         expiresIn: "1h",
       });
   
