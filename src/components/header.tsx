@@ -8,7 +8,9 @@ import { useRouter } from "next/navigation";
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false); // State to manage admin status
   const router = useRouter(); // Initialize router
+
   useEffect(() => {
     // Function to check if JWT is valid
     const checkAuth = () => {
@@ -24,17 +26,21 @@ export default function Header() {
             localStorage.removeItem("token");
             localStorage.removeItem("isLoggedIn");
             setIsLoggedIn(false);
+            setIsAdmin(false);
           } else {
             setIsLoggedIn(true);
+            setIsAdmin(decoded.role === "admin"); // Check if user is admin
           }
         } catch (error) {
           console.log("Invalid token, logging out...");
           localStorage.removeItem("token");
           localStorage.removeItem("isLoggedIn");
           setIsLoggedIn(false);
+          setIsAdmin(false);
         }
       } else {
         setIsLoggedIn(false);
+        setIsAdmin(false);
       }
     };
 
@@ -84,6 +90,13 @@ export default function Header() {
                 >
                   About
                 </Link>
+
+                {isAdmin && (
+                  <Link href="/admin" className="bg-red-500 text-white px-3 py-2 rounded-md text-sm font-medium">
+                    Admin Panel
+                  </Link>
+                )}
+
 
                 {!isLoggedIn ? (
                   <Link

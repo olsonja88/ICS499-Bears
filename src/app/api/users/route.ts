@@ -1,7 +1,6 @@
-import { NextResponse } from 'next/server';
-import { getDB } from '@/lib/db';
+import { NextResponse } from "next/server";
+import { getDB } from "@/lib/db";
 import { Database } from "sqlite";
-
 
 interface User {
     id?: number;
@@ -14,12 +13,14 @@ interface User {
 // gets all users
 export async function GET() {
     try {
-        const db : Database = await getDB();
+        const db: Database = await getDB();
         const users: User[] = await db.all("SELECT id, username, email, role FROM users");
+
         return NextResponse.json(users);
     } catch (error) {
+        console.error("GET Users Error:", error);
         return NextResponse.json(
-            {error: "Database error, failed to fetch users", details: error },
+            { error: "Database error, failed to fetch users", details: error },
             { status: 500 }
         );
     }
@@ -29,6 +30,7 @@ export async function GET() {
 export async function POST(req: Request) {
     try {
         const { username, email, password_hash, role = "viewer" }: User = await req.json();
+
         if (!username || !email || !password_hash) {
             return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
         }
@@ -39,8 +41,12 @@ export async function POST(req: Request) {
             [username, email, password_hash, role]
         );
 
-        return NextResponse.json({ message: "User created successfully!", userId: result.lastID }, { status: 201 });
-    } catch {
+        return NextResponse.json(
+            { message: "User created successfully!", userId: result.lastID },
+            { status: 201 }
+        );
+    } catch (error) {
+        console.error("POST User Error:", error);
         return NextResponse.json({ error: "Failed to create user" }, { status: 500 });
     }
 }
@@ -49,6 +55,7 @@ export async function POST(req: Request) {
 export async function PUT(req: Request) {
     try {
         const { id, username, email, role }: User = await req.json();
+
         if (!id || !username || !email || !role) {
             return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
         }
@@ -64,7 +71,8 @@ export async function PUT(req: Request) {
         }
 
         return NextResponse.json({ message: "User updated successfully!" });
-    } catch {
+    } catch (error) {
+        console.error("PUT User Error:", error);
         return NextResponse.json({ error: "Failed to update user" }, { status: 500 });
     }
 }
@@ -73,6 +81,7 @@ export async function PUT(req: Request) {
 export async function DELETE(req: Request) {
     try {
         const { id }: { id: number } = await req.json();
+
         if (!id) {
             return NextResponse.json({ error: "User ID is required" }, { status: 400 });
         }
@@ -85,7 +94,8 @@ export async function DELETE(req: Request) {
         }
 
         return NextResponse.json({ message: "User deleted successfully!" });
-    } catch {
+    } catch (error) {
+        console.error("DELETE User Error:", error);
         return NextResponse.json({ error: "Failed to delete user" }, { status: 500 });
     }
 }

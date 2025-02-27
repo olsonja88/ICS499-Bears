@@ -19,13 +19,6 @@ export default function Home() {
         reverse
       />
 
-      {/* User Management Section */}
-      <div className="flex justify-center mt-10 mb-10">
-        <div className="w-full max-w-2xl">
-          <UserList />
-        </div>
-      </div>
-
       {/* Chatbot Section */}
       <div className="flex justify-center mt-10 mb-10">
         <Chatbot />
