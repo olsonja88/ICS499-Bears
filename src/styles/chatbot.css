@@ -1,0 +1,17 @@
+.chat-response {
+	background-color: #f8f9fa; /* Light gray */
+	padding: 16px;
+	border-radius: 8px;
+	border: 1px solid #ccc;
+	line-height: 1.6;
+	color: #333;
+	white-space: pre-line;
+  }
+  .chat-response strong {
+	font-weight: bold;
+	color: #222;
+  }
+  .chat-response li {
+	margin-left: 20px;
+  }
+  
