@@ -1,7 +1,6 @@
 import Hero from "@/components/hero";
 import ContentSection from "@/components/content-section";
 import Chatbot from "@/components/chatbot";
-import UserList from "@/components/userlist";
 
 export default function Home() {
   return (
