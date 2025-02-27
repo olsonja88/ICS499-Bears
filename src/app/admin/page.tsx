@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import UserList from "@/components/userlist";
 
 export default function AdminPage() {
     const [isLoading, setIsLoading] = useState(true);
@@ -42,6 +43,9 @@ export default function AdminPage() {
         <div>
             <h1>Admin Panel</h1>
             <p>Welcome, Admin!</p>
+            
+            {/* Display User Management */}
+            <UserList />
         </div>
     );
 }
