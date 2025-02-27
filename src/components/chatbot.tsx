@@ -4,7 +4,9 @@ import React, { useState } from "react";
 
 const Chatbot = () => {
     const [message, setMessage] = useState("");
-    const [chatHistory, setChatHistory] = useState<{ role: string; content: string }[]>([]);
+    const [chatHistory, setChatHistory] = useState([
+        { role: "assistant", content: "Ask me questions related to dances!" }
+    ]);
     const [loading, setLoading] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
 
@@ -12,7 +14,6 @@ const Chatbot = () => {
         if (!message.trim()) return;
         setLoading(true);
 
-        // Append user message to history before sending
         const newUserMessage = { role: "user", content: message };
         const updatedHistory = [...chatHistory, newUserMessage];
 
@@ -20,25 +21,32 @@ const Chatbot = () => {
             const res = await fetch("/api/ask", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ userMessage: message, chatHistory: updatedHistory }), // Send full history
+                body: JSON.stringify({ userMessage: message, chatHistory: updatedHistory }),
             });
 
             const data = await res.json();
             if (data.reply) {
-                const newAiMessage = { role: "assistant", content: data.reply };
-                setChatHistory([...updatedHistory, newAiMessage]); // Append AI response to history
+                const newAiMessage = { role: "assistant", content: formatResponse(data.reply) };
+                setChatHistory([...updatedHistory, newAiMessage]);
             }
         } catch (error) {
             console.error("Error fetching response:", error);
         }
 
-        setMessage(""); // Clear input field
+        setMessage("");
         setLoading(false);
+    };
+
+    const formatResponse = (text: string) => {
+        return text
+            .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+            .replace(/\* (.*?)\*/g, "<li>$1</li>")
+            .replace(/\n/g, "<br />")
+            .replace(/(\*\s\*\*.*?)\*\*/g, "<br /><strong>$1</strong>");
     };
 
     return (
         <div className="fixed bottom-5 right-5 z-50">
-            {/* Chatbot Toggle Button */}
             <button 
                 className="p-3 bg-blue-500 text-white rounded-full shadow-md hover:bg-blue-600"
                 onClick={() => setIsOpen(!isOpen)}
@@ -46,13 +54,11 @@ const Chatbot = () => {
                 💬
             </button>
 
-            {/* Chatbot Popup */}
             {isOpen && (
                 <div className="w-96 p-4 border rounded-lg shadow-lg bg-white fixed bottom-16 right-5 z-50">
-                    <h2 className="text-lg font-semibold text-black mb-2">Dance Bot</h2>
+                    <h2 className="text-lg font-semibold text-black mb-2">Dance Chatbot</h2>
 
-                    {/* Chat Display (Scrollable Area) */}
-                    <div className="bg-gray-100 border border-gray-300 rounded-lg p-3 max-h-72 min-h-56 overflow-y-auto flex flex-col space-y-2">
+                    <div className="bg-gray-100 border border-gray-300 rounded-lg p-3 max-h-96 min-h-72 overflow-y-auto flex flex-col space-y-2">
                         {chatHistory.map((msg, index) => (
                             <div 
                                 key={index} 
@@ -61,13 +67,11 @@ const Chatbot = () => {
                                         ? "bg-blue-500 text-white self-end" 
                                         : "bg-gray-300 text-black self-start"
                                 }`}
-                            >
-                                {msg.content}
-                            </div>
+                                dangerouslySetInnerHTML={{ __html: msg.content }} // Render formatted response
+                            />
                         ))}
                     </div>
 
-                    {/* Input & Send Button */}
                     <div className="mt-3 flex">
                         <input
                             type="text"
