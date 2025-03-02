@@ -1,17 +1,21 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
 import { Dance } from "@/lib/types"; // Import the shared type
+import { Button } from "@/components/button"; // Import the Button component
+import { getCurrentUser } from "@/lib/auth";
 
 const DanceDetails = () => {
   const { id } = useParams();
+  const router = useRouter();
   const [dance, setDance] = useState<Dance | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [categoryName, setCategoryName] = useState<string>("");
   const [countryName, setCountryName] = useState<string>("");
+  const [canEdit, setCanEdit] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -24,6 +28,13 @@ const DanceDetails = () => {
           signal: controller.signal,
         });
         setDance(response.data);
+
+        // Check if current user can edit this dance
+        const currentUser = getCurrentUser();
+        setCanEdit(
+          currentUser?.isAdmin || 
+          (currentUser?.id === response.data.createdBy)
+        );
 
         // Fetch category name
         const categoryResponse = await axios.get(`/api/categories/${response.data.categoryId}`);
@@ -58,7 +69,17 @@ const DanceDetails = () => {
   return (
     <div className="min-h-screen bg-black text-white p-8">
       <div className="max-w-4xl mx-auto pt-20">
-        <h1 className="text-3xl font-bold mb-6">{dance.title}</h1>
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-3xl font-bold">{dance.title}</h1>
+          {canEdit && (
+            <Button
+              onClick={() => router.push(`/dance/edit/${dance.id}`)}
+              className="bg-white text-black hover:bg-gray-200 px-6 py-2 rounded-full font-semibold transition-colors"
+            >
+              Edit Dance
+            </Button>
+          )}
+        </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           <p className="bg-white bg-opacity-10 backdrop-blur-md p-4 rounded">
