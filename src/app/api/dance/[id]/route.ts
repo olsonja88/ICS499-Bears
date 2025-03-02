@@ -6,7 +6,8 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const id = await params.id;
+    const { id } = await params;
+
     if (!id) {
       return NextResponse.json({ error: "Dance ID is required" }, { status: 400 });
     }

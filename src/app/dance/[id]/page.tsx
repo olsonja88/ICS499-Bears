@@ -56,15 +56,15 @@ const DanceDetails = () => {
   if (!dance) return <div>No dance details found.</div>;
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-8">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-black text-white p-8">
+      <div className="max-w-4xl mx-auto pt-20">
         <h1 className="text-3xl font-bold mb-6">{dance.title}</h1>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-          <p className="bg-gray-800 p-4 rounded">
+          <p className="bg-white bg-opacity-10 backdrop-blur-md p-4 rounded">
             <strong>Country:</strong> {countryName}
           </p>
-          <p className="bg-gray-800 p-4 rounded">
+          <p className="bg-white bg-opacity-10 backdrop-blur-md p-4 rounded">
             <strong>Category:</strong> {categoryName}
           </p>
         </div>
@@ -79,20 +79,20 @@ const DanceDetails = () => {
               />
             </div>
           ) : (
-            <div className="bg-gray-800 p-4 rounded">
+            <div className="bg-white bg-opacity-10 backdrop-blur-md p-4 rounded">
               No media available.
             </div>
           )}
         </div>
 
-        <div className="bg-gray-800 p-6 rounded mb-8">
-          <h2 className="text-xl font-semibold mb-4">Description</h2>
+        <div className="bg-white bg-opacity-10 backdrop-blur-md p-6 rounded mb-8">
+          <h2 className="text-xl font-semibold mb-4 text-white">Description</h2>
           <p>{dance.description}</p>
         </div>
 
         {/* Comments section can be added here once implemented */}
-        <div className="bg-gray-800 p-6 rounded">
-          <h2 className="text-xl font-semibold mb-4">Comments</h2>
+        <div className="bg-white bg-opacity-10 backdrop-blur-md p-6 rounded">
+          <h2 className="text-xl font-semibold mb-4 text-white">Comments</h2>
           <p>Comments feature coming soon.</p>
         </div>
       </div>
