@@ -2,6 +2,7 @@ import DanceLayout from "@/components/dance-layout";
 import DanceCard from "@/components/dance-card";
 import Chatbot from "@/components/chatbot";
 import { Dance } from "@/lib/types";
+import { Button } from "@/components/button";
 
 async function getDances(): Promise<Dance[]> {
   try {
