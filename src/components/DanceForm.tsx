@@ -8,6 +8,7 @@ import { Button } from "@/components/button"
 import DanceLayout from "@/components/dance-layout"
 import { Dance } from "@/lib/types"
 import { useRouter } from "next/navigation"
+import { getCurrentUser } from "@/lib/auth"
 
 interface Category {
   id: number;
@@ -26,6 +27,7 @@ interface DanceFormProps {
 
 export default function DanceForm({ initialData, mode }: DanceFormProps) {
   const router = useRouter()
+  const [isAuthorized, setIsAuthorized] = useState(true)
   const [title, setTitle] = useState(initialData?.title || "")
   const [description, setDescription] = useState(initialData?.description || "")
   const [categoryId, setCategoryId] = useState<number>(initialData?.categoryId || 0)
@@ -36,6 +38,20 @@ export default function DanceForm({ initialData, mode }: DanceFormProps) {
   const [error, setError] = useState("")
   const [categories, setCategories] = useState<Category[]>([])
   const [countries, setCountries] = useState<Country[]>([])
+
+  // Check authorization on mount
+  useEffect(() => {
+    const currentUser = getCurrentUser()
+    if (!currentUser) {
+      setIsAuthorized(false)
+      router.push('/login')
+    }
+  }, [router])
+
+  // Don't render form if not authorized
+  if (!isAuthorized) {
+    return null
+  }
 
   useEffect(() => {
     // Fetch categories

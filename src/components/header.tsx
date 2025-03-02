@@ -78,12 +78,14 @@ export default function Header() {
                 >
                   Dances
                 </Link>
-                <Link
-                  href="/dance/create"
-                  className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-                >
-                  Create
-                </Link>
+                {isLoggedIn && (
+                  <Link
+                    href="/dance/create"
+                    className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                  >
+                    Create
+                  </Link>
+                )}
                 <Link
                   href="/maps"
                   className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
