@@ -7,6 +7,7 @@ import Select from "@/components/select"
 import { Button } from "@/components/button"
 import DanceLayout from "@/components/dance-layout"
 import { Dance } from "@/lib/types"
+import { useRouter } from "next/navigation"
 
 interface Category {
   id: number;
@@ -24,12 +25,14 @@ interface DanceFormProps {
 }
 
 export default function DanceForm({ initialData, mode }: DanceFormProps) {
+  const router = useRouter()
   const [title, setTitle] = useState(initialData?.title || "")
   const [description, setDescription] = useState(initialData?.description || "")
   const [categoryId, setCategoryId] = useState<number>(initialData?.categoryId || 0)
   const [countryId, setCountryId] = useState<number>(initialData?.countryId || 0)
   const [url, setUrl] = useState(initialData?.url || "")
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
   const [error, setError] = useState("")
   const [categories, setCategories] = useState<Category[]>([])
   const [countries, setCountries] = useState<Country[]>([])
@@ -105,6 +108,35 @@ export default function DanceForm({ initialData, mode }: DanceFormProps) {
     }
   }
 
+  const handleDelete = async () => {
+    if (!initialData?.id) return;
+    
+    const confirmed = window.confirm("Are you sure you want to delete this dance? This action cannot be undone.")
+    if (!confirmed) return;
+
+    setIsDeleting(true)
+    setError("")
+
+    try {
+      const response = await fetch('/api/dance', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id: initialData.id }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to delete dance')
+      }
+
+      router.push('/dance')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete dance')
+      setIsDeleting(false)
+    }
+  }
+
   return (
     <DanceLayout backgroundImage="/placeholder.svg?height=1080&width=1920">
       <div className="pt-20 flex justify-center items-center min-h-screen">
@@ -165,15 +197,27 @@ export default function DanceForm({ initialData, mode }: DanceFormProps) {
                 }))
               ]}
             />
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="bg-white text-black hover:bg-gray-200 px-8 py-3 rounded-full font-semibold transition-colors"
-            >
-              {isSubmitting 
-                ? (mode === 'create' ? 'Posting...' : 'Updating...') 
-                : (mode === 'create' ? 'Post Dance' : 'Update Dance')}
-            </Button>
+            <div className="flex gap-4 justify-end">
+              {mode === 'edit' && (
+                <Button
+                  type="button"
+                  onClick={handleDelete}
+                  disabled={isDeleting}
+                  className="bg-red-500 text-white hover:bg-red-600 px-6 py-2 rounded-full font-semibold transition-colors"
+                >
+                  {isDeleting ? 'Deleting...' : 'Delete Dance'}
+                </Button>
+              )}
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+                className="bg-white text-black hover:bg-gray-200 px-8 py-3 rounded-full font-semibold transition-colors"
+              >
+                {isSubmitting 
+                  ? (mode === 'create' ? 'Posting...' : 'Updating...') 
+                  : (mode === 'create' ? 'Post Dance' : 'Update Dance')}
+              </Button>
+            </div>
           </form>
         </div>
       </div>
