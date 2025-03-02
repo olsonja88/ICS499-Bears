@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS user_roles (
 
 -- Insert sample users
 INSERT INTO users (username, email, password_hash, role) VALUES
-('admin1', 'admin1@example.com', 'hashedpassword1', 'admin'),
+('admin1', 'admin1@example.com', '$2b$10$ginJV3UXV/dU/e4SraiVG.kbEGl3KtNxeMzJDWSijJ73qkLhuVM.i', 'admin'), -- password -> adminpassword
 ('creator1', 'creator1@example.com', 'hashedpassword2', 'creator'),
 ('viewer1', 'viewer1@example.com', 'hashedpassword3', 'viewer'),
 ('admin2', 'admin2@example.com', 'hashedpassword4', 'admin'),

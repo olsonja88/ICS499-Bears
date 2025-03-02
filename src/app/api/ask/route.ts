@@ -5,7 +5,7 @@ export async function POST(req: Request) {
     try {
         const { userMessage } = await req.json();
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
-        const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
 
         const result = await model.generateContent(userMessage);
         const response = await result.response;
