@@ -106,24 +106,51 @@ INSERT INTO countries (name, code) VALUES
 
 -- Insert sample media
 INSERT INTO media (type, url) VALUES
-('image', 'https://olsonja88.github.io/ICS499-Bears/assets/ballet1.jpg'),
-('image', 'https://olsonja88.github.io/ICS499-Bears/assets/hiphop1.jpg'),
-('image', 'https://olsonja88.github.io/ICS499-Bears/assets/salsa1.jpg'),
-('image', 'https://olsonja88.github.io/ICS499-Bears/assets/tango1.jpg'),
-('image', 'https://olsonja88.github.io/ICS499-Bears/assets/jazz1.jpg'),
-('image', 'https://olsonja88.github.io/ICS499-Bears/assets/contemporary1.jpg'),
-('image', 'https://olsonja88.github.io/ICS499-Bears/assets/bboy1.jpg'),
-('image', 'https://olsonja88.github.io/ICS499-Bears/assets/flamenco1.jpg'),
-('image', 'https://olsonja88.github.io/ICS499-Bears/assets/swing1.jpg');
+('image', 'https://olsonja88.github.io/ICS499-Bears/assets/ballet1.jpg'), -- 1
+('image', 'https://olsonja88.github.io/ICS499-Bears/assets/hiphop1.jpg'), -- 2
+('image', 'https://olsonja88.github.io/ICS499-Bears/assets/salsa1.jpg'), -- 3
+('image', 'https://olsonja88.github.io/ICS499-Bears/assets/tango1.jpg'), -- 4
+('image', 'https://olsonja88.github.io/ICS499-Bears/assets/jazz1.jpg'), -- 5
+('image', 'https://olsonja88.github.io/ICS499-Bears/assets/contemporary1.jpg'), -- 6
+('image', 'https://olsonja88.github.io/ICS499-Bears/assets/bboy1.jpg'), -- 7
+('image', 'https://olsonja88.github.io/ICS499-Bears/assets/flamenco1.jpg'), -- 8
+('image', 'https://olsonja88.github.io/ICS499-Bears/assets/swing1.jpg'), -- 9
+('video', 'https://olsonja88.github.io/ICS499-Bears/assets/dock-dance.mp4'), -- 10
+('video', 'https://olsonja88.github.io/ICS499-Bears/assets/los-muertos.mp4'), -- 11 
+('video', 'https://olsonja88.github.io/ICS499-Bears/assets/warehouse-breakdance.mp4'); -- 12
 
 -- Insert sample dances
 INSERT INTO dances (title, description, category_id, country_id, media_id, created_by) VALUES
-('Swan Lake', 'A classic ballet performance.', 1, 3, 1, 2),
+('Swan Lake', 'A classic ballet performance.', 1, 3, 1, 2), -- 1
+('Dock Dance', 'A dance performed on a dock.', 9, 1, 10, 3), -- 2
 ('Street Popping', 'A freestyle hip-hop routine.', 2, 1, 2, 5),
-('Salsa Explosion', 'An energetic salsa performance.', 3, 6, 3, 3),
-('Passionate Tango', 'A fiery tango number.', 4, 6, 4, 4),
-('Broadway Jazz', 'A jazz routine with Broadway influences.', 5, 1, 5, 6),
-('Modern Flow', 'A contemporary dance performance.', 6, 10, 6, 7),
-('B-boy Battle', 'A competitive breakdancing event.', 7, 1, 7, 8),
-('Flamenco Fiesta', 'A traditional flamenco dance.', 8, 5, 8, 9),
-('Swing Revival', 'A lively swing dance.', 9, 1, 9, 10);
+('Salsa Explosion', 'An energetic salsa performance.', 3, 6, 3, 3), -- 3
+('Los Muertos', 'A traditional Mexican dance.', 4, 6, 11, 4), -- 4
+('Passionate Tango', 'A fiery tango number.', 4, 6, 4, 4), -- 5
+('Broadway Jazz', 'A jazz routine with Broadway influences.', 5, 1, 5, 6), -- 6
+('Modern Flow', 'A contemporary dance performance.', 6, 10, 6, 7), -- 7
+('B-boy Battle', 'A competitive breakdancing event.', 7, 1, 7, 8), -- 8
+('Flamenco Fiesta', 'A traditional flamenco dance.', 8, 5, 8, 9), -- 9
+('Swing Revival', 'A lively swing dance.', 9, 1, 9, 10), -- 10
+('Warehouse Breakdancing', 'A breakdancing performance in a warehouse.', 7, 1, 12, 11); -- 11
+
+-- Insert sample comments
+INSERT INTO comments (user_id, dance_id, content) VALUES
+(1, 1, 'This is a great ballet performance!'),
+(2, 2, 'I love the swing dance moves!'),
+(3, 3, 'The salsa is amazing!'),
+(4, 4, 'The tango is so passionate!'),
+(5, 5, 'The jazz routine is fantastic!'),
+(6, 6, 'The contemporary dance is beautiful!'),
+(7, 7, 'The breakdancing is incredible!'),
+(8, 8, 'The flamenco is amazing!'),
+(9, 9, 'The swing is so lively!'),
+(10, 10, 'The dock dance is amazing!'),
+(9, 11, 'The breakdancing is incredible!'),
+(8, 12, 'The warehouse breakdancing is amazing!'),
+(7, 1, 'The ballet is beautiful!'),
+(6, 2, 'The swing dance is amazing!'),
+(5, 3, 'The salsa is amazing!'),
+(4, 4, 'The tango is so passionate!'),
+(3, 5, 'The jazz routine is fantastic!'),
+(2, 6, 'The contemporary dance is beautiful!');

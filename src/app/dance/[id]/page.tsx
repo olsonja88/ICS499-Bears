@@ -1,15 +1,20 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
 import { Dance } from "@/lib/types"; // Import the shared type
 import { Button } from "@/components/button"; // Import the Button component
 import { getCurrentUser } from "@/lib/auth";
 
+function isVideoUrl(url: string): boolean {
+  return url.match(/\.(mp4|webm|ogg)$/) !== null;
+}
+
 const DanceDetails = () => {
   const { id } = useParams();
   const router = useRouter();
+  const videoRef = useRef<HTMLVideoElement>(null);
   const [dance, setDance] = useState<Dance | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -62,6 +67,32 @@ const DanceDetails = () => {
     };
   }, [id]);
 
+  useEffect(() => {
+    if (!videoRef.current || !dance?.url || !isVideoUrl(dance.url)) return;
+
+    const options = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.5
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          videoRef.current?.play().catch(err => console.log("Autoplay prevented:", err));
+        } else {
+          videoRef.current?.pause();
+        }
+      });
+    }, options);
+
+    observer.observe(videoRef.current);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [dance?.url]);
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div className="error">{error}</div>;
   if (!dance) return <div>No dance details found.</div>;
@@ -93,11 +124,24 @@ const DanceDetails = () => {
         <div className="mb-8">
           {dance.url ? (
             <div className="aspect-w-16 aspect-h-9">
-              <img
-                src={dance.url}
-                alt={dance.title}
-                className="rounded-lg object-cover w-full h-full"
-              />
+              {isVideoUrl(dance.url) ? (
+                <video
+                  ref={videoRef}
+                  src={dance.url}
+                  controls
+                  muted
+                  loop
+                  playsInline
+                  className="rounded-lg w-full h-full"
+                  style={{ objectFit: "contain" }}
+                />
+              ) : (
+                <img
+                  src={dance.url}
+                  alt={dance.title}
+                  className="rounded-lg object-cover w-full h-full"
+                />
+              )}
             </div>
           ) : (
             <div className="bg-white bg-opacity-10 backdrop-blur-md p-4 rounded">
