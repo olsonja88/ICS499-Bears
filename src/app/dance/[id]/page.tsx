@@ -7,6 +7,13 @@ import { Dance } from "@/lib/types"; // Import the shared type
 import { Button } from "@/components/button"; // Import the Button component
 import { getCurrentUser } from "@/lib/auth";
 
+interface Comment {
+  id: number;
+  content: string;
+  created_at: string;
+  username: string;
+}
+
 function isVideoUrl(url: string): boolean {
   return url.match(/\.(mp4|webm|ogg)$/) !== null;
 }
@@ -21,6 +28,7 @@ const DanceDetails = () => {
   const [categoryName, setCategoryName] = useState<string>("");
   const [countryName, setCountryName] = useState<string>("");
   const [canEdit, setCanEdit] = useState(false);
+  const [comments, setComments] = useState<Comment[]>([]);
 
   useEffect(() => {
     if (!id) return;
@@ -48,6 +56,10 @@ const DanceDetails = () => {
         // Fetch country name
         const countryResponse = await axios.get(`/api/countries/${response.data.countryId}`);
         setCountryName(countryResponse.data.name);
+
+        // Fetch comments
+        const commentsResponse = await axios.get(`/api/comments/${id}`);
+        setComments(commentsResponse.data);
       } catch (err: any) {
         if (axios.isCancel(err)) {
           console.log("Request canceled:", err.message);
@@ -155,10 +167,25 @@ const DanceDetails = () => {
           <p>{dance.description}</p>
         </div>
 
-        {/* Comments section can be added here once implemented */}
         <div className="bg-white bg-opacity-10 backdrop-blur-md p-6 rounded">
           <h2 className="text-xl font-semibold mb-4 text-white">Comments</h2>
-          <p>Comments feature coming soon.</p>
+          {comments.length > 0 ? (
+            <div className="space-y-4">
+              {comments.map((comment) => (
+                <div key={comment.id} className="border-b border-white border-opacity-10 pb-4">
+                  <div className="flex justify-between items-start mb-2">
+                    <span className="font-semibold text-sm">{comment.username}</span>
+                    <span className="text-xs text-gray-400">
+                      {new Date(comment.created_at).toLocaleDateString()}
+                    </span>
+                  </div>
+                  <p className="text-sm">{comment.content}</p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-400">No comments yet.</p>
+          )}
         </div>
       </div>
     </div>
