@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "@/app/globals.css";
 import Header from "@/components/header";
+import FeedbackForm from "@/components/FeedbackForm"; // ✅ Import FeedbackForm
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -29,6 +31,7 @@ export default function RootLayout({
       >
         <Header />
         {children}
+        <FeedbackForm /> {/* ✅ Add FeedbackForm here */}
       </body>
     </html>
   );

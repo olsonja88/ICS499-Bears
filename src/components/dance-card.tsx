@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link"; // Import Link from Next.js
+import Link from "next/link";
 import { Button } from "./button";
 import {
   Card,
@@ -11,14 +11,26 @@ import {
 } from "./card";
 
 interface DanceCardProps {
-  id: string; // Added dance ID
+  id: string;
   title: string;
   description: string;
   image: string;
+  country: string;
+  category: string;
 }
 
-export default function DanceCard({ id, title, description, image }: DanceCardProps) {
+export default function DanceCard({ id, title, description, image, country, category }: DanceCardProps) {
   console.log("Dance Data in DanceCard:", { id, title });
+
+  // 🔹 Convert dance details into a URL-friendly string
+  const queryString = new URLSearchParams({
+    title,
+    description,
+    image,
+    country,
+    category,
+  }).toString();
+
   return (
     <Card className="bg-white bg-opacity-80 backdrop-blur-sm transition-all hover:bg-opacity-90 flex flex-col justify-between h-full">
       <CardHeader>
@@ -36,8 +48,8 @@ export default function DanceCard({ id, title, description, image }: DanceCardPr
         />
       </CardContent>
       <CardFooter>
-        {/* Link to Dance Details page */}
-        <Link href={`/dance/${id}`} passHref>
+        {/* 🔹 Pass dance data in the URL */}
+        <Link href={`/dance/${id}?${queryString}`} passHref>
           <Button variant="outline" className="w-full">
             Learn More
           </Button>
