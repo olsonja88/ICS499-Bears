@@ -23,7 +23,7 @@ export async function POST(req: Request) {
 
         // Send reset link via email
         const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL}/pwchange?token=${token}`;
-        await sendEmail(email, "Password Reset Request", `Click here to reset your password: <a href="${resetUrl}">${resetUrl}</a>`);
+        await sendEmail(email, "Password Reset Request", `Click here to reset your Dancepedia password: <a href="${resetUrl}">${resetUrl}</a>`);
 
         return NextResponse.json({ message: "If this email exists, a reset link has been sent." }, { status: 200 });
     } catch (error) {
