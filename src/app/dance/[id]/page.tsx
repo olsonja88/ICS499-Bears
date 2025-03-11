@@ -45,8 +45,10 @@ const DanceDetails = () => {
         // Check if current user can edit this dance
         const currentUser = getCurrentUser();
         setCanEdit(
-          currentUser?.isAdmin || 
-          (currentUser?.id === response.data.createdBy)
+          currentUser ? (
+            currentUser.isAdmin || 
+            currentUser.id === response.data.createdBy
+          ) : false
         );
 
         // Fetch category name
