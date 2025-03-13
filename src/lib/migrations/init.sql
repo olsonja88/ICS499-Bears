@@ -106,24 +106,51 @@ INSERT INTO countries (name, code) VALUES
 
 -- Insert sample media
 INSERT INTO media (type, url) VALUES
-('image', 'https://olsonja88.github.io/ICS499-Bears/assets/ballet1.jpg'),
-('image', 'https://olsonja88.github.io/ICS499-Bears/assets/hiphop1.jpg'),
-('image', 'https://olsonja88.github.io/ICS499-Bears/assets/salsa1.jpg'),
-('image', 'https://olsonja88.github.io/ICS499-Bears/assets/tango1.jpg'),
-('image', 'https://olsonja88.github.io/ICS499-Bears/assets/jazz1.jpg'),
-('image', 'https://olsonja88.github.io/ICS499-Bears/assets/contemporary1.jpg'),
-('image', 'https://olsonja88.github.io/ICS499-Bears/assets/bboy1.jpg'),
-('image', 'https://olsonja88.github.io/ICS499-Bears/assets/flamenco1.jpg'),
-('image', 'https://olsonja88.github.io/ICS499-Bears/assets/swing1.jpg');
+('image', 'https://olsonja88.github.io/ICS499-Bears/assets/ballet1.jpg'), -- 1
+('image', 'https://olsonja88.github.io/ICS499-Bears/assets/hiphop1.jpg'), -- 2
+('image', 'https://olsonja88.github.io/ICS499-Bears/assets/salsa1.jpg'), -- 3
+('image', 'https://olsonja88.github.io/ICS499-Bears/assets/tango1.jpg'), -- 4
+('image', 'https://olsonja88.github.io/ICS499-Bears/assets/jazz1.jpg'), -- 5
+('image', 'https://olsonja88.github.io/ICS499-Bears/assets/contemporary1.jpg'), -- 6
+('image', 'https://olsonja88.github.io/ICS499-Bears/assets/bboy1.jpg'), -- 7
+('image', 'https://olsonja88.github.io/ICS499-Bears/assets/flamenco1.jpg'), -- 8
+('image', 'https://olsonja88.github.io/ICS499-Bears/assets/swing1.jpg'), -- 9
+('video', 'https://olsonja88.github.io/ICS499-Bears/assets/dock-dance.mp4'), -- 10
+('video', 'https://olsonja88.github.io/ICS499-Bears/assets/los-muertos.mp4'), -- 11 
+('video', 'https://olsonja88.github.io/ICS499-Bears/assets/warehouse-breakdance.mp4'); -- 12
 
 -- Insert sample dances
 INSERT INTO dances (title, description, category_id, country_id, media_id, created_by) VALUES
-('Swan Lake', 'A classic ballet performance.', 1, 3, 1, 2),
+('Swan Lake', 'A classic ballet performance.', 1, 3, 1, 2), -- 1
+('Dock Dance', 'A dance performed on a dock.', 7, 1, 10, 3), -- 2
 ('Street Popping', 'A freestyle hip-hop routine.', 2, 1, 2, 5),
-('Salsa Explosion', 'An energetic salsa performance.', 3, 6, 3, 3),
-('Passionate Tango', 'A fiery tango number.', 4, 6, 4, 4),
-('Broadway Jazz', 'A jazz routine with Broadway influences.', 5, 1, 5, 6),
-('Modern Flow', 'A contemporary dance performance.', 6, 10, 6, 7),
-('B-boy Battle', 'A competitive breakdancing event.', 7, 1, 7, 8),
-('Flamenco Fiesta', 'A traditional flamenco dance.', 8, 5, 8, 9),
-('Swing Revival', 'A lively swing dance.', 9, 1, 9, 10);
+('Salsa Explosion', 'An energetic salsa performance.', 3, 6, 3, 3), -- 3
+('Los Muertos', 'A traditional Mexican dance.', 10, 6, 11, 4), -- 4
+('Passionate Tango', 'A fiery tango number.', 4, 6, 4, 4), -- 5
+('Broadway Jazz', 'A jazz routine with Broadway influences.', 5, 1, 5, 6), -- 6
+('Modern Flow', 'A contemporary dance performance.', 6, 10, 6, 7), -- 7
+('B-boy Battle', 'A competitive breakdancing event.', 7, 1, 7, 8), -- 8
+('Flamenco Fiesta', 'A traditional flamenco dance.', 8, 5, 8, 9), -- 9
+('Swing Revival', 'A lively swing dance.', 9, 1, 9, 10), -- 10
+('Warehouse Breakdancing', 'A breakdancing performance in a warehouse.', 7, 1, 12, 11); -- 11
+
+-- Insert sample comments
+INSERT INTO comments (user_id, dance_id, content) VALUES
+(1, 1, 'The grace and precision in this ballet piece is breathtaking!'),
+(2, 2, 'Amazing breakdancing moves on that dock setting!'),
+(3, 3, 'The hip-hop routine really shows off the street style!'),
+(4, 4, 'Such a vibrant salsa performance - the energy is contagious!'),
+(5, 5, 'Beautiful representation of Mexican folk traditions and culture!'),
+(6, 6, 'The passion in this tango performance is undeniable!'),
+(7, 7, 'Love how this jazz routine incorporates Broadway elements!'),
+(8, 8, 'The fluidity in this contemporary piece is beautiful!'),
+(9, 9, 'Incredible power moves in this b-boy battle!'),
+(10, 10, 'The traditional flamenco footwork is so precise!'),
+(9, 11, 'This swing dance really captures the spirit of the era!'),
+(8, 12, 'The warehouse setting perfectly complements the breakdancing!'),
+(7, 1, 'Such control and elegance in this ballet performance!'),
+(6, 2, 'The breakdancing on the dock is so creative!'),
+(5, 3, 'This hip-hop routine has such great energy!'),
+(4, 4, 'The salsa rhythms are perfectly executed!'),
+(3, 5, 'The costumes and movements really honor the Day of the Dead tradition!'),
+(2, 6, 'The tango movements are so sharp and precise!');
