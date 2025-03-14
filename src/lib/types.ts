@@ -4,6 +4,8 @@ export type Dance = {
     description: string;
     categoryId: number;
     countryId: number;
+    category: string;
+    country: string;
     url?: string;
     createdBy?: string;
 }

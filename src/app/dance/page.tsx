@@ -34,6 +34,8 @@ export default async function DancePage() {
               title={dance.title}
               description={dance.description}
               image={dance.url ?? "/placeholder.jpg"}
+              country={dance.country}
+              category={dance.category}
             />
           ))}
         </div>
