@@ -26,7 +26,14 @@ function isVideoUrl(url: string): boolean {
   return url.match(/\.(mp4|webm|ogg)$/) !== null;
 }
 
-export default function DanceCard({ id, title, description, image }: DanceCardProps) {
+export default function DanceCard({
+  id,
+  title,
+  description,
+  image,
+  country,
+  category,
+}: DanceCardProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {

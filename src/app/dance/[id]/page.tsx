@@ -193,3 +193,5 @@ const DanceDetails = () => {
     </div>
   );
 }
+
+export default DanceDetails;
