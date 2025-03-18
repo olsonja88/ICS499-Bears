@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image"; // Import Image component
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
 
@@ -60,6 +61,13 @@ export default function Header() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center">
+              <Image
+                src="/DALL·E 2025-03-16 22.58.15 - A colorful and vibrant logo for a cultural dance group website featuring dancers from around the world. The logo includes a globe at the center, with .webp" // Update with the correct path to your logo
+                alt="Logo"
+                width={40} // Adjust the width as needed
+                height={40} // Adjust the height as needed
+                className="mr-2" // Add some margin to the right
+              />
               <Link href="/" className="text-white font-bold text-xl">
                 Cultural Dance
               </Link>
@@ -104,7 +112,6 @@ export default function Header() {
                     Admin Panel
                   </Link>
                 )}
-
 
                 {!isLoggedIn ? (
                   <Link
