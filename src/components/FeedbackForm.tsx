@@ -42,7 +42,7 @@ export default function FeedbackForm() {
       {/* Button to Open Popup */}
       <button
         onClick={toggleModal}
-        className="fixed bottom-6 right-6 bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700"
+        className="fixed bottom-6 left-6 bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700"
       >
         Feedback
       </button>
