@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "./button";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Card,
   CardContent,
@@ -35,6 +35,7 @@ export default function DanceCard({
   category,
 }: DanceCardProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
     if (!videoRef.current || !isVideoUrl(image)) return;
@@ -49,8 +50,10 @@ export default function DanceCard({
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           videoRef.current?.play().catch(err => console.log("Autoplay prevented:", err));
+          setIsPlaying(true);
         } else {
           videoRef.current?.pause();
+          setIsPlaying(false);
         }
       });
     }, options);
@@ -61,6 +64,18 @@ export default function DanceCard({
       observer.disconnect();
     };
   }, [image]);
+
+  const togglePlayPause = () => {
+    if (!videoRef.current) return;
+    
+    if (videoRef.current.paused) {
+      videoRef.current.play().catch(err => console.log("Play prevented:", err));
+      setIsPlaying(true);
+    } else {
+      videoRef.current.pause();
+      setIsPlaying(false);
+    }
+  };
 
   console.log("Dance Data in DanceCard:", { id, title });
 
@@ -82,16 +97,33 @@ export default function DanceCard({
       <CardContent className="flex justify-center items-center">
         {image ? (
           isVideoUrl(image) ? (
-            <video
-              ref={videoRef}
-              src={image}
-              controls
-              muted
-              loop
-              playsInline
-              className="rounded-md max-w-full"
-              style={{ maxHeight: "400px" }}
-            />
+            <div className="relative cursor-pointer" onClick={togglePlayPause}>
+              <video
+                ref={videoRef}
+                src={image}
+                muted
+                loop
+                playsInline
+                className="rounded-md max-w-full"
+                style={{ maxHeight: "400px" }}
+              />
+              {!isPlaying && (
+                <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 rounded-md">
+                  <svg 
+                    width="64" 
+                    height="64" 
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    stroke="white" 
+                    strokeWidth="2" 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round"
+                  >
+                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                  </svg>
+                </div>
+              )}
+            </div>
           ) : (
             <Image
               src={image}
@@ -114,8 +146,7 @@ export default function DanceCard({
         )}
       </CardContent>
       <CardFooter>
-        {/* 🔹 Pass dance data in the URL */}
-        <Link href={`/dance/${id}?${queryString}`} passHref>
+        <Link href={`/dance/${id}`} passHref>
           <Button variant="outline" className="w-full">
             Learn More
           </Button>
