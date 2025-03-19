@@ -13,22 +13,22 @@ export async function POST(req: Request) {
 
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
 
-        // 🔒 Validate JWT Token for Admin Access
-        let userRole = "viewer";
+        // Validate JWT Token for Admin Access
+        let userRole = "viewer"; // Default role
         if (token) {
             try {
-                console.log("🔑 Received Token:", token); // ✅ Debug token
+                console.log("🔑 Received Token:", token);
                 const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
                 userRole = decoded.role || "viewer";
                 console.log("✅ Decoded User Role:", userRole);
             } catch (err) {
                 console.log("❌ Invalid Token:", (err as Error).message);
-                return NextResponse.json({ error: "Unauthorized: Invalid token" }, { status: 401 });
+                userRole = "viewer"; // Treat as a normal user if token is invalid
             }
         } else {
-            console.log("❌ No Token Provided");
-            return NextResponse.json({ error: "Unauthorized: No token provided" }, { status: 401 });
+            console.log("ℹ️ No token provided. Defaulting to viewer.");
         }
+        
 
         const systemMessage = {
             role: "user",
@@ -135,7 +135,7 @@ export async function POST(req: Request) {
                     await db.run(query.trim());
                 }
 
-                // ✅ Extract correct values from AI-generated SQL
+                // Extract correct values from AI-generated SQL
                 const categoryMatch = sqlQuery.match(/INSERT OR IGNORE INTO categories \(name\) VALUES \('(.+?)'\)/);
                 const countryMatch = sqlQuery.match(/INSERT OR IGNORE INTO countries \(name, code\) VALUES \('(.+?)',\s*'(.+?)'\)/);
                 const danceMatch = sqlQuery.match(/INSERT INTO dances \(title, category_id, country_id\)\s*VALUES \('(.+?)',/);
