@@ -18,13 +18,22 @@ interface DanceCardProps {
   title: string;
   description: string;
   image: string;
+  country: string;
+  category: string;
 }
 
 function isVideoUrl(url: string): boolean {
   return url.match(/\.(mp4|webm|ogg)$/) !== null;
 }
 
-export default function DanceCard({ id, title, description, image }: DanceCardProps) {
+export default function DanceCard({
+  id,
+  title,
+  description,
+  image,
+  country,
+  category,
+}: DanceCardProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
 
@@ -69,6 +78,16 @@ export default function DanceCard({ id, title, description, image }: DanceCardPr
   };
 
   console.log("Dance Data in DanceCard:", { id, title });
+
+  // 🔹 Convert dance details into a URL-friendly string
+  const queryString = new URLSearchParams({
+    title,
+    description,
+    image,
+    country,
+    category,
+  }).toString();
+
   return (
     <Card className="bg-white bg-opacity-80 backdrop-blur-sm transition-all hover:bg-opacity-90 flex flex-col justify-between h-full">
       <CardHeader>

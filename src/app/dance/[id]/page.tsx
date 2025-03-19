@@ -274,6 +274,6 @@ const DanceDetails = () => {
       </div>
     </div>
   );
-};
+}
 
 export default DanceDetails;

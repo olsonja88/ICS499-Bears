@@ -4,6 +4,7 @@ import "@/app/globals.css";
 import Header from "@/components/header";
 import { ChatbotProvider } from "@/context/chatbotcontext";
 import Chatbot from "@/components/chatbot";
+import FeedbackForm from "@/components/FeedbackForm";
 
 
 const geistSans = Geist({
@@ -37,6 +38,7 @@ export default function RootLayout({
           <Header />
           {children}
           <Chatbot /> {/* Add Chatbot inside provider for persistence */}
+          <FeedbackForm />
         </ChatbotProvider>
       </body>
     </html>
