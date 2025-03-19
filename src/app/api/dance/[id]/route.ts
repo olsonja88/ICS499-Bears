@@ -19,9 +19,13 @@ export async function GET(
       media.id AS media_id,
       media.type AS media_type,
       media.url AS media_url,
-      media.uploaded_at AS media_uploaded_at
+      media.uploaded_at AS media_uploaded_at,
+      categories.name AS category_name,
+      countries.name AS country_name
       FROM dances
       LEFT JOIN media ON dances.media_id = media.id
+      LEFT JOIN categories ON dances.category_id = categories.id
+      LEFT JOIN countries ON dances.country_id = countries.id
       WHERE dances.id = ?;`;
 
     const row = await db.get(query, [params.id]);
@@ -39,6 +43,8 @@ export async function GET(
       description: row.description || "",
       categoryId: row.category_id,
       countryId: row.country_id,
+      category: row.category_name,
+      country: row.country_name,
       url: row.media_url || undefined,
       createdBy: row.created_by?.toString() || undefined
     };
