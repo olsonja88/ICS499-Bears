@@ -65,17 +65,17 @@ export async function POST(req: Request) {
                    - If missing, **create them automatically first**.
         
                 **🛠️ RULES FOR SQL GENERATION (SQLite-Compatible)**:
-                - **Insert category only if missing**:
+                - **Insert category first**:
                   \`\`\`sql
                   INSERT OR IGNORE INTO categories (name) VALUES ('Hip-Hop');
                   \`\`\`
         
-                - **Insert country only if missing**:
+                - **Insert country second**:
                   \`\`\`sql
                   INSERT OR IGNORE INTO countries (name, code) VALUES ('USA', 'US');
                   \`\`\`
         
-                - **Insert a dance with correct category & country IDs**:
+                - **Insert the dance last**:
                   \`\`\`sql
                   INSERT INTO dances (title, category_id, country_id)
                   VALUES ('Electric Shuffle', 
@@ -109,7 +109,7 @@ export async function POST(req: Request) {
         console.log("🤖 AI Response:", aiResponse);
 
         let sqlQuery = "";
-let dbResponse = "";
+        let dbResponse = "";
 
         // 🔍 Extract AI-generated SQL query correctly
         const sqlMatch = aiResponse.match(/```sql([\s\S]+?)```/);
@@ -120,6 +120,14 @@ let dbResponse = "";
                 const db = await getDB();
                 const queries = sqlQuery.split(";").filter(q => q.trim());
 
+                // Ensure categories and countries are inserted first
+                queries.sort((a, b) => {
+                    if (a.includes("INSERT OR IGNORE INTO categories") || a.includes("INSERT OR IGNORE INTO countries")) {
+                        return -1; // Run these first
+                    }
+                    return 1; // Run everything else after
+                });
+
                 console.log("🔍 Executing SQL Queries:", queries);
 
                 for (const query of queries) {
@@ -127,26 +135,39 @@ let dbResponse = "";
                     await db.run(query.trim());
                 }
 
-                // ✅ Fetch category ID and country ID manually
-                const categoryRow = await db.get(`SELECT id FROM categories WHERE name = ?`, ['Hip-Hop']);
-                const countryRow = await db.get(`SELECT id FROM countries WHERE name = ?`, ['USA']);
+                // ✅ Extract correct values from AI-generated SQL
+                const categoryMatch = sqlQuery.match(/INSERT OR IGNORE INTO categories \(name\) VALUES \('(.+?)'\)/);
+                const countryMatch = sqlQuery.match(/INSERT OR IGNORE INTO countries \(name, code\) VALUES \('(.+?)',\s*'(.+?)'\)/);
+                const danceMatch = sqlQuery.match(/INSERT INTO dances \(title, category_id, country_id\)\s*VALUES \('(.+?)',/);
 
-                console.log("✅ Category ID:", categoryRow?.id);
-                console.log("✅ Country ID:", countryRow?.id);
+                const categoryName = categoryMatch ? categoryMatch[1] : null;
+                const countryName = countryMatch ? countryMatch[1] : null;
+                const danceTitle = danceMatch ? danceMatch[1] : null;
 
-                if (!categoryRow || !countryRow) {
-                    dbResponse = "⚠️ Query executed, but category or country is missing.";
+                console.log("🎭 Extracted Category:", categoryName);
+                console.log("🌍 Extracted Country:", countryName);
+                console.log("💃 Extracted Dance:", danceTitle);
+
+                if (!categoryName || !countryName || !danceTitle) {
+                    dbResponse = `⚠️ Error extracting data from SQL. Debug Info:
+                        - Extracted Category: ${categoryName}
+                        - Extracted Country: ${countryName}
+                        - Extracted Dance: ${danceTitle}`;
                 } else {
-                    // ✅ Insert dance manually to debug
-                    await db.run(
-                        `INSERT INTO dances (title, category_id, country_id) VALUES (?, ?, ?)`,
-                        ['Electric Shuffle', categoryRow.id, countryRow.id]
-                    );
+                    const categoryRow = await db.get(`SELECT id FROM categories WHERE name = ?`, [categoryName]);
+                    const countryRow = await db.get(`SELECT id FROM countries WHERE name = ?`, [countryName]);
 
-                    const danceRow = await db.get(`SELECT * FROM dances WHERE title = ?`, ['Electric Shuffle']);
-                    console.log("✅ Dance Inserted:", danceRow);
+                    if (categoryRow && countryRow) {
+                        await db.run(
+                            `INSERT INTO dances (title, category_id, country_id) VALUES (?, ?, ?)`,
+                            [danceTitle, categoryRow.id, countryRow.id]
+                        );
 
-                    dbResponse = danceRow ? "✅ Successfully executed the query and inserted the dance." : "⚠️ Query executed, but the dance was not inserted.";
+                        const danceRow = await db.get(`SELECT * FROM dances WHERE title = ?`, [danceTitle]);
+                        dbResponse = danceRow ? `✅ Successfully inserted dance: ${danceTitle}.` : "⚠️ Query executed, but the dance was not inserted.";
+                    } else {
+                        dbResponse = "⚠️ Query executed, but category or country is missing.";
+                    }
                 }
             } catch (dbError) {
                 console.error("❌ SQL Execution Error:", dbError);
@@ -154,10 +175,7 @@ let dbResponse = "";
             }
         }
 
-
-        return NextResponse.json({
-            reply: sqlQuery ? `Executed SQL Query:\n\`${sqlQuery}\`\n\nResult: ${dbResponse}` : aiResponse
-        });
+        return NextResponse.json({ reply: sqlQuery ? `Executed SQL Query:\n\`${sqlQuery}\`\n\nResult: ${dbResponse}` : aiResponse });
 
     } catch (error) {
         console.error("❌ API Error:", error);
