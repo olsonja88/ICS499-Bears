@@ -5,7 +5,7 @@ import { useChatbot } from "@/context/chatbotcontext";
 import { jwtDecode } from "jwt-decode";
 
 const Chatbot = () => {
-    const { chatHistory, addMessage, clearMessages } = useChatbot(); // Added clearMessages function
+    const { chatHistory, addMessage, resetChat } = useChatbot();
     const [message, setMessage] = useState("");
     const [pendingMessage, setPendingMessage] = useState("");
     const [loading, setLoading] = useState(false);
@@ -90,8 +90,14 @@ const Chatbot = () => {
     
     // Clears chat history
     const handleClearChat = () => {
-        clearMessages();
+        console.log("🧹 Clearing chat...");
+        resetChat();
+        setMessage(""); // ✅ Ensures UI updates
+        setTimeout(() => {
+            console.log("✅ Chat history should be empty now:", chatHistory);
+        }, 100);
     };
+    
 
     // Format bot response for readability
     const formatResponse = (text: string) => {
@@ -184,3 +190,7 @@ const Chatbot = () => {
 };
 
 export default Chatbot;
+function resetChat() {
+    throw new Error("Function not implemented.");
+}
+

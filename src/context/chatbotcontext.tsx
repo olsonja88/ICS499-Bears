@@ -36,7 +36,7 @@ export const ChatbotProvider = ({ children }: { children: React.ReactNode }) => 
     const resetChat = () => {
         setChatHistory([{ sender: "bot", text: "Ask me questions related to dances!" }]);
     };
-
+    
     return (
         <ChatbotContext.Provider value={{ chatHistory, addMessage, resetChat }}>
             {children}
