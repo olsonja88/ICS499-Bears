@@ -7,7 +7,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
 export async function POST(req: Request) {
     try {
-        console.log("✅ API `/api/ask.ts` triggered"); // 🔍 Debugging log
+        console.log("✅ API `/api/ask/route.ts` triggered"); // 🔍 Debugging log
         const { userMessage, chatHistory = [], token } = await req.json();
         console.log("📝 User Message:", userMessage);
 
@@ -46,23 +46,28 @@ export async function POST(req: Request) {
                 - The current user has the role: **${userRole}**.
                 - If the role is **admin**, you are allowed to generate SQL queries if requested.
                 - If the role is **viewer**, do NOT generate SQL and reply: "This feature is only available to admin users."
-        
+                
+                **Chat History Awareness:**
+                - You must be aware of the chat history and generate responses based on the context.
+                - If the user asks a follow-up question, you must provide a relevant answer based on the previous conversation.
+
+                
                 **🛠️ DATABASE RULES:**
                 - **Tables & Required Fields**:
                 
-                🟢 **categories** (\`id\`, \`name\`)
-                   - Stores dance categories (e.g., Ballet, Hip-Hop, Salsa).
+                **categories** (\`id\`, \`name\`)
+                - Stores dance categories (e.g., Ballet, Hip-Hop, Salsa).
         
-                🟢 **countries** (\`id\`, \`name\`, \`code\`)
-                   - Stores country names and their codes.
+                **countries** (\`id\`, \`name\`, \`code\`)
+                - Stores country names and their codes.
         
-                🟢 **dances** (\`id\`, \`title\`, \`category_id\`, \`country_id\`)
-                   - **Required Fields**:
-                     - \`title\` (TEXT, NOT NULL)
-                     - \`category_id\` (INTEGER, FOREIGN KEY)
-                     - \`country_id\` (INTEGER, FOREIGN KEY)
-                   - Must check if **\`category_id\` and \`country_id\` exist before inserting**.
-                   - If missing, **create them automatically first**.
+                **dances** (\`id\`, \`title\`, \`category_id\`, \`country_id\`)
+                - **Required Fields**:
+                    - \`title\` (TEXT, NOT NULL)
+                    - \`category_id\` (INTEGER, FOREIGN KEY)
+                    - \`country_id\` (INTEGER, FOREIGN KEY)
+                - Must check if **\`category_id\` and \`country_id\` exist before inserting**.
+                - If missing, **create them automatically first**.
         
                 **🛠️ RULES FOR SQL GENERATION (SQLite-Compatible)**:
                 - **Insert category first**:
@@ -158,10 +163,22 @@ export async function POST(req: Request) {
                     const countryRow = await db.get(`SELECT id FROM countries WHERE name = ?`, [countryName]);
 
                     if (categoryRow && countryRow) {
+                        // ✅ Check if the dance already exists
+                    const existingDance = await db.get(`SELECT id FROM dances WHERE title = ?`, [danceTitle]);
+
+                    if (existingDance) {
+                        console.log(`⚠️ Dance "${danceTitle}" already exists. Skipping insertion.`);
+                        dbResponse = `⚠️ Dance "${danceTitle}" already exists in the database.`;
+                    } else {
                         await db.run(
                             `INSERT INTO dances (title, category_id, country_id) VALUES (?, ?, ?)`,
                             [danceTitle, categoryRow.id, countryRow.id]
                         );
+
+                        const danceRow = await db.get(`SELECT * FROM dances WHERE title = ?`, [danceTitle]);
+                        dbResponse = danceRow ? `✅ Successfully inserted dance: ${danceTitle}.` : "⚠️ Query executed, but the dance was not inserted.";
+                    }
+
 
                         const danceRow = await db.get(`SELECT * FROM dances WHERE title = ?`, [danceTitle]);
                         dbResponse = danceRow ? `✅ Successfully inserted dance: ${danceTitle}.` : "⚠️ Query executed, but the dance was not inserted.";
