@@ -5,7 +5,7 @@ import { useChatbot } from "@/context/chatbotcontext";
 import { jwtDecode } from "jwt-decode";
 
 const Chatbot = () => {
-    const { chatHistory, addMessage } = useChatbot();
+    const { chatHistory, addMessage, clearMessages } = useChatbot(); // Added clearMessages function
     const [message, setMessage] = useState("");
     const [pendingMessage, setPendingMessage] = useState("");
     const [loading, setLoading] = useState(false);
@@ -72,9 +72,8 @@ const Chatbot = () => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}` // Send token in header
                 },
-                body: JSON.stringify({ userMessage: message }),
+                body: JSON.stringify({ userMessage: message, token }),
             });
     
             const data = await res.json();
@@ -89,6 +88,10 @@ const Chatbot = () => {
         setLoading(false);
     };
     
+    // Clears chat history
+    const handleClearChat = () => {
+        clearMessages();
+    };
 
     // Format bot response for readability
     const formatResponse = (text: string) => {
@@ -135,7 +138,7 @@ const Chatbot = () => {
                         )}
                     </div>
 
-                    {/* Input Area */}
+                    {/* Input & Buttons */}
                     <div className="mt-2 flex">
                         <input
                             ref={inputRef}
@@ -160,12 +163,20 @@ const Chatbot = () => {
                         </button>
                     </div>
 
-                    {/* Admin SQL Execution Notice */}
-                    {isAdmin && (
-                        <p className="text-xs text-gray-500 text-center mt-2">
-                            * Admins can request SQL queries to update the database.
-                        </p>
-                    )}
+                    {/* Admin SQL Execution Notice & Clear Chat Button */}
+                    <div className="mt-2 flex justify-between items-center">
+                        {isAdmin && (
+                            <p className="text-xs text-gray-500">* Admins can request SQL queries.</p>
+                        )}
+                        {chatHistory.length > 0 && (
+                            <button
+                                onClick={handleClearChat}
+                                className="text-xs bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                            >
+                                Clear Chat
+                            </button>
+                        )}
+                    </div>
                 </div>
             )}
         </div>

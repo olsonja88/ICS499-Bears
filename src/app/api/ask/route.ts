@@ -7,34 +7,34 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
 export async function POST(req: Request) {
     try {
-        const { userMessage, chatHistory = [] } = await req.json();
+        console.log("✅ API `/api/ask.ts` triggered"); // 🔍 Debugging log
+        const { userMessage, chatHistory = [], token } = await req.json();
+        console.log("📝 User Message:", userMessage);
+
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
 
-        // 🔐 Extract token from headers
-        const authHeader = req.headers.get("Authorization");
-        console.log("🔹 Auth Header:", authHeader); // Debugging
-
-        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        // 🔒 Validate JWT Token for Admin Access
+        let userRole = "viewer";
+        if (token) {
+            try {
+                console.log("🔑 Received Token:", token); // ✅ Debug token
+                const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
+                userRole = decoded.role || "viewer";
+                console.log("✅ Decoded User Role:", userRole);
+            } catch (err) {
+                console.log("❌ Invalid Token:", (err as Error).message);
+                return NextResponse.json({ error: "Unauthorized: Invalid token" }, { status: 401 });
+            }
+        } else {
+            console.log("❌ No Token Provided");
             return NextResponse.json({ error: "Unauthorized: No token provided" }, { status: 401 });
         }
 
-        const token = authHeader.split(" ")[1];
-
-        let userRole = "viewer";
-        try {
-            const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
-            userRole = decoded.role || "viewer";
-            console.log("✅ Decoded Token:", decoded); // Debugging
-        } catch (error) {
-            console.error("❌ JWT Verification Error:", error);
-            return NextResponse.json({ error: "Unauthorized: Invalid token" }, { status: 401 });
-        }
-
-        // 📝 AI System Prompt (Restricts Topics & SQL Execution)
         const systemMessage = {
             role: "user",
             parts: [{ 
-                text: `You are an AI assistant specializing in dance-related topics. 
+                text: `
+                You are an AI assistant specializing in dance-related topics. 
                 You must only answer questions about:
                 - Dance styles and techniques
                 - Choreography and performances
@@ -47,75 +47,120 @@ export async function POST(req: Request) {
                 - If the role is **admin**, you are allowed to generate SQL queries if requested.
                 - If the role is **viewer**, do NOT generate SQL and reply: "This feature is only available to admin users."
         
-                **Important:** Always verify the user's role before responding to SQL requests.
+                **🛠️ DATABASE RULES:**
+                - **Tables & Required Fields**:
+                
+                🟢 **categories** (\`id\`, \`name\`)
+                   - Stores dance categories (e.g., Ballet, Hip-Hop, Salsa).
+        
+                🟢 **countries** (\`id\`, \`name\`, \`code\`)
+                   - Stores country names and their codes.
+        
+                🟢 **dances** (\`id\`, \`title\`, \`category_id\`, \`country_id\`)
+                   - **Required Fields**:
+                     - \`title\` (TEXT, NOT NULL)
+                     - \`category_id\` (INTEGER, FOREIGN KEY)
+                     - \`country_id\` (INTEGER, FOREIGN KEY)
+                   - Must check if **\`category_id\` and \`country_id\` exist before inserting**.
+                   - If missing, **create them automatically first**.
+        
+                **🛠️ RULES FOR SQL GENERATION (SQLite-Compatible)**:
+                - **Insert category only if missing**:
+                  \`\`\`sql
+                  INSERT OR IGNORE INTO categories (name) VALUES ('Hip-Hop');
+                  \`\`\`
+        
+                - **Insert country only if missing**:
+                  \`\`\`sql
+                  INSERT OR IGNORE INTO countries (name, code) VALUES ('USA', 'US');
+                  \`\`\`
+        
+                - **Insert a dance with correct category & country IDs**:
+                  \`\`\`sql
+                  INSERT INTO dances (title, category_id, country_id)
+                  VALUES ('Electric Shuffle', 
+                      (SELECT id FROM categories WHERE name = 'Hip-Hop'), 
+                      (SELECT id FROM countries WHERE name = 'USA'));
+                  \`\`\`
+        
+                **🛠️ SQL OUTPUT FORMAT (MUST FOLLOW THIS FORMAT)**:
+                \`SQL_QUERY: <query_here>\`
                 `
             }]
         };
-        
 
-        // Convert history into API-compatible format
         const formattedHistory = chatHistory.map(msg => ({
             role: msg.role,
             parts: [{ text: msg.content }]
         }));
 
-        // Add new user message
         const userMessageFormatted = {
             role: "user",
             parts: [{ text: userMessage }]
         };
 
-        // Combine system prompt, history, and new message
         const messages = [systemMessage, ...formattedHistory, userMessageFormatted];
 
-        // 🔥 Send request to Gemini API
+        // 🔥 Send request to Gemini AI
+        console.log("🔥 Sending request to Gemini AI...");
         const result = await model.generateContent({ contents: messages });
         const response = await result.response;
         const aiResponse = response.text();
-
-        console.log("🤖 AI Response:", aiResponse); // Debugging AI response
+        console.log("🤖 AI Response:", aiResponse);
 
         let sqlQuery = "";
-        let dbResponse = "";
+let dbResponse = "";
 
-        // 🔍 Check if AI response is an SQL query
-        if (aiResponse.toLowerCase().includes("select")) {
-            if (userRole === "admin") {
-                sqlQuery = aiResponse.trim();
+        // 🔍 Extract AI-generated SQL query correctly
+        const sqlMatch = aiResponse.match(/```sql([\s\S]+?)```/);
+        if (userRole === "admin" && sqlMatch) {
+            sqlQuery = sqlMatch[1].trim();
 
-                // ❗ SQL Security: Only Allow SELECT Queries
-                if (!sqlQuery.toLowerCase().startsWith("select")) {
-                    return NextResponse.json({ reply: "Only SELECT queries are allowed." });
+            try {
+                const db = await getDB();
+                const queries = sqlQuery.split(";").filter(q => q.trim());
+
+                console.log("🔍 Executing SQL Queries:", queries);
+
+                for (const query of queries) {
+                    console.log("▶ Running query:", query);
+                    await db.run(query.trim());
                 }
 
-                try {
-                    const db = await getDB();
-                    dbResponse = await db.all(sqlQuery);
-                    console.log("✅ SQL Query Executed Successfully:", dbResponse);
-                } catch (dbError) {
-                    console.error("❌ SQL Error:", dbError);
-                    dbResponse = "Error executing SQL query.";
+                // ✅ Fetch category ID and country ID manually
+                const categoryRow = await db.get(`SELECT id FROM categories WHERE name = ?`, ['Hip-Hop']);
+                const countryRow = await db.get(`SELECT id FROM countries WHERE name = ?`, ['USA']);
+
+                console.log("✅ Category ID:", categoryRow?.id);
+                console.log("✅ Country ID:", countryRow?.id);
+
+                if (!categoryRow || !countryRow) {
+                    dbResponse = "⚠️ Query executed, but category or country is missing.";
+                } else {
+                    // ✅ Insert dance manually to debug
+                    await db.run(
+                        `INSERT INTO dances (title, category_id, country_id) VALUES (?, ?, ?)`,
+                        ['Electric Shuffle', categoryRow.id, countryRow.id]
+                    );
+
+                    const danceRow = await db.get(`SELECT * FROM dances WHERE title = ?`, ['Electric Shuffle']);
+                    console.log("✅ Dance Inserted:", danceRow);
+
+                    dbResponse = danceRow ? "✅ Successfully executed the query and inserted the dance." : "⚠️ Query executed, but the dance was not inserted.";
                 }
-            } else {
-                console.warn("⚠️ Non-admin user attempted SQL query.");
-                return NextResponse.json({ reply: "This feature is only available to admin users." });
+            } catch (dbError) {
+                console.error("❌ SQL Execution Error:", dbError);
+                dbResponse = `❌ Error executing SQL query: ${(dbError as Error).message}`;
             }
         }
 
-        // ✅ Append AI response to history
-        const updatedChatHistory = [
-            ...chatHistory,
-            { role: "user", content: userMessage },
-            { role: "assistant", content: sqlQuery ? `Generated SQL Query:\n\`${sqlQuery}\`\n\nDatabase Response: ${JSON.stringify(dbResponse)}` : aiResponse }
-        ];
 
         return NextResponse.json({
-            reply: sqlQuery ? `Generated SQL Query:\n\`${sqlQuery}\`\n\nDatabase Response: ${JSON.stringify(dbResponse)}` : aiResponse,
-            chatHistory: updatedChatHistory
+            reply: sqlQuery ? `Executed SQL Query:\n\`${sqlQuery}\`\n\nResult: ${dbResponse}` : aiResponse
         });
 
     } catch (error) {
-        console.error("❌ Error:", error);
+        console.error("❌ API Error:", error);
         return NextResponse.json({ error: "Failed to generate response" }, { status: 500 });
     }
 }
