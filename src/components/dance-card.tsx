@@ -1,9 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link"; // Import Link from Next.js
+import Link from "next/link";
 import { Button } from "./button";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Card,
   CardContent,
@@ -14,7 +14,7 @@ import {
 } from "./card";
 
 interface DanceCardProps {
-  id: string; // Added dance ID
+  id: string;
   title: string;
   description: string;
   image: string;
@@ -26,6 +26,7 @@ function isVideoUrl(url: string): boolean {
 
 export default function DanceCard({ id, title, description, image }: DanceCardProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
     if (!videoRef.current || !isVideoUrl(image)) return;
@@ -40,8 +41,10 @@ export default function DanceCard({ id, title, description, image }: DanceCardPr
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           videoRef.current?.play().catch(err => console.log("Autoplay prevented:", err));
+          setIsPlaying(true);
         } else {
           videoRef.current?.pause();
+          setIsPlaying(false);
         }
       });
     }, options);
@@ -53,6 +56,18 @@ export default function DanceCard({ id, title, description, image }: DanceCardPr
     };
   }, [image]);
 
+  const togglePlayPause = () => {
+    if (!videoRef.current) return;
+    
+    if (videoRef.current.paused) {
+      videoRef.current.play().catch(err => console.log("Play prevented:", err));
+      setIsPlaying(true);
+    } else {
+      videoRef.current.pause();
+      setIsPlaying(false);
+    }
+  };
+
   console.log("Dance Data in DanceCard:", { id, title });
   return (
     <Card className="bg-white bg-opacity-80 backdrop-blur-sm transition-all hover:bg-opacity-90 flex flex-col justify-between h-full">
@@ -63,16 +78,33 @@ export default function DanceCard({ id, title, description, image }: DanceCardPr
       <CardContent className="flex justify-center items-center">
         {image ? (
           isVideoUrl(image) ? (
-            <video
-              ref={videoRef}
-              src={image}
-              controls
-              muted
-              loop
-              playsInline
-              className="rounded-md max-w-full"
-              style={{ maxHeight: "400px" }}
-            />
+            <div className="relative cursor-pointer" onClick={togglePlayPause}>
+              <video
+                ref={videoRef}
+                src={image}
+                muted
+                loop
+                playsInline
+                className="rounded-md max-w-full"
+                style={{ maxHeight: "400px" }}
+              />
+              {!isPlaying && (
+                <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 rounded-md">
+                  <svg 
+                    width="64" 
+                    height="64" 
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    stroke="white" 
+                    strokeWidth="2" 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round"
+                  >
+                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                  </svg>
+                </div>
+              )}
+            </div>
           ) : (
             <Image
               src={image}
@@ -95,7 +127,6 @@ export default function DanceCard({ id, title, description, image }: DanceCardPr
         )}
       </CardContent>
       <CardFooter>
-        {/* Link to Dance Details page */}
         <Link href={`/dance/${id}`} passHref>
           <Button variant="outline" className="w-full">
             Learn More

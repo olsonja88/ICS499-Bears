@@ -29,6 +29,9 @@ const DanceDetails = () => {
   const [countryName, setCountryName] = useState<string>("");
   const [canEdit, setCanEdit] = useState(false);
   const [comments, setComments] = useState<Comment[]>([]);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [volume, setVolume] = useState(0.5);
+  const [isMuted, setIsMuted] = useState(true);
 
   useEffect(() => {
     if (!id) return;
@@ -94,8 +97,10 @@ const DanceDetails = () => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           videoRef.current?.play().catch(err => console.log("Autoplay prevented:", err));
+          setIsPlaying(true);
         } else {
           videoRef.current?.pause();
+          setIsPlaying(false);
         }
       });
     }, options);
@@ -106,6 +111,37 @@ const DanceDetails = () => {
       observer.disconnect();
     };
   }, [dance?.url]);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.volume = volume;
+      videoRef.current.muted = isMuted;
+    }
+  }, [volume, isMuted]);
+
+  const togglePlayPause = () => {
+    if (!videoRef.current) return;
+    
+    if (videoRef.current.paused) {
+      videoRef.current.play().catch(err => console.log("Play prevented:", err));
+      setIsPlaying(true);
+    } else {
+      videoRef.current.pause();
+      setIsPlaying(false);
+    }
+  };
+
+  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newVolume = parseFloat(e.target.value);
+    setVolume(newVolume);
+    if (newVolume > 0 && isMuted) {
+      setIsMuted(false);
+    }
+  };
+
+  const toggleMute = () => {
+    setIsMuted(!isMuted);
+  };
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div className="error">{error}</div>;
@@ -137,18 +173,64 @@ const DanceDetails = () => {
 
         <div className="mb-8">
           {dance.url ? (
-            <div className="aspect-w-16 aspect-h-9">
+            <div className="aspect-w-16 aspect-h-9 relative">
               {isVideoUrl(dance.url) ? (
-                <video
-                  ref={videoRef}
-                  src={dance.url}
-                  controls
-                  muted
-                  loop
-                  playsInline
-                  className="rounded-lg w-full h-full"
-                  style={{ objectFit: "contain" }}
-                />
+                <div className="relative">
+                  <div className="cursor-pointer" onClick={togglePlayPause}>
+                    <video
+                      ref={videoRef}
+                      src={dance.url}
+                      loop
+                      playsInline
+                      className="rounded-lg w-full"
+                      style={{ objectFit: "contain" }}
+                    />
+                    {!isPlaying && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 rounded-lg">
+                        <svg 
+                          width="64" 
+                          height="64" 
+                          viewBox="0 0 24 24" 
+                          fill="none" 
+                          stroke="white" 
+                          strokeWidth="2" 
+                          strokeLinecap="round" 
+                          strokeLinejoin="round"
+                        >
+                          <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex items-center mt-2 p-2 bg-white bg-opacity-10 backdrop-blur-md rounded inline-flex">
+                    <button onClick={toggleMute} className="mr-2 text-white">
+                      {isMuted ? (
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M11 5L6 9H2v6h4l5 4V5z"></path>
+                          <line x1="23" y1="9" x2="17" y2="15"></line>
+                          <line x1="17" y1="9" x2="23" y2="15"></line>
+                        </svg>
+                      ) : (
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                          <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+                        </svg>
+                      )}
+                    </button>
+                    <div className="w-full">
+                      <input
+                        type="range"
+                        min="0"
+                        max="1"
+                        step="0.01"
+                        value={volume}
+                        onChange={handleVolumeChange}
+                        className="w-full"
+                      />
+                    </div>
+                  </div>
+                </div>
               ) : (
                 <img
                   src={dance.url}
