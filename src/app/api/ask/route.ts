@@ -11,7 +11,7 @@ export async function POST(req: Request) {
         const { userMessage, chatHistory = [], token } = await req.json();
         console.log("📝 User Message:", userMessage);
 
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         // Validate JWT Token for Admin Access
         let userRole = "viewer";
