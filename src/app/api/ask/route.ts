@@ -82,7 +82,7 @@ export async function POST(req: Request) {
             }]
         };
 
-        const formattedHistory = chatHistory.map(msg => ({
+        const formattedHistory = chatHistory.map((msg: { role: string; content: string }) => ({
             role: msg.role,
             parts: [{ text: msg.content }]
         }));

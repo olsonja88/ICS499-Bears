@@ -10,13 +10,6 @@ const nextConfig: NextConfig = {
         pathname: '/ICS499-Bears/assets/**',
         search: '',
       },
-      {
-        protocol: 'https',
-        hostname: 'upload.wikimedia.org', // 🟢 Allow Wikipedia Images
-        port: '',
-        pathname: '/wikipedia/commons/**', // ✅ Allows all Wikipedia images
-        search: '',
-      },
     ],
   },
 };
