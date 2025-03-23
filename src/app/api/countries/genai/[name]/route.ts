@@ -9,7 +9,11 @@ export async function GET(
   { params }: { params: { name: string } }
 ) {
   try {
-    const { name } = params;
+    if (!params) {
+      return NextResponse.json({ error: "Route parameters not available" }, { status: 400 });
+    }
+
+    const { name } = await params;
 
     if (!name) {
       return NextResponse.json({ error: "Country name is required" }, { status: 400 });
