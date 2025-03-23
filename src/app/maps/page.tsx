@@ -3,8 +3,8 @@
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import "leaflet/dist/leaflet.css";
+import { LeafletMouseEvent } from "leaflet";
 
-// 🟢 Dynamically import Map components to prevent SSR issues
 const MapContainer = dynamic(() => import("react-leaflet").then((mod) => mod.MapContainer), { ssr: false });
 const TileLayer = dynamic(() => import("react-leaflet").then((mod) => mod.TileLayer), { ssr: false });
 import { useMapEvents } from "react-leaflet";
@@ -21,7 +21,7 @@ const countryFixes: Record<string, string> = {
 export default function MapsPage() {
   const router = useRouter();
 
-  const fetchCountryName = async (lat: number, lng: number) => {
+  const gotoCountryPage = async (lat: number, lng: number) => {
     try {
       const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
       const data = await response.json();
@@ -29,10 +29,10 @@ export default function MapsPage() {
       if (data.address && data.address.country) {
         let countryName = data.address.country;
         if (countryFixes[countryName]) {
-          countryName = countryFixes[countryName]; // Fix country name for Wikipedia
+          countryName = countryFixes[countryName];
         }
 
-        router.push(`/dance/country/${encodeURIComponent(countryName)}`);
+        router.push(`/country?name=${encodeURIComponent(countryName)}`);
       }
     } catch (error) {
       console.error("Error fetching country name:", error);
@@ -41,8 +41,8 @@ export default function MapsPage() {
 
   function MapClickHandler() {
     useMapEvents({
-      click(e) {
-        fetchCountryName(e.latlng.lat, e.latlng.lng);
+      click(e: LeafletMouseEvent) {
+        gotoCountryPage(e.latlng.lat, e.latlng.lng);
       },
     });
     return null;
