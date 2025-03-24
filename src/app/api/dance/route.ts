@@ -5,20 +5,21 @@ import { Dance } from "@/lib/types";
 export async function GET() {
   try {
     const db = await getDB();
-    const query = `SELECT 
-      dances.id AS dance_id,
-      dances.title,
-      dances.description,
-      dances.category_id,
-      dances.country_id,
-      dances.created_by,
-      dances.created_at,
-      media.id AS media_id,
-      media.type AS media_type,
-      media.url AS media_url,
-      media.uploaded_at AS media_uploaded_at
+    const query = `
+      SELECT 
+        dances.id AS dance_id,
+        dances.title,
+        dances.description,
+        categories.name AS category,
+        countries.name AS country,
+        dances.created_by,
+        dances.created_at,
+        media.url AS media_url
       FROM dances
-      LEFT JOIN media ON dances.media_id = media.id;`;
+      LEFT JOIN categories ON dances.category_id = categories.id
+      LEFT JOIN countries ON dances.country_id = countries.id
+      LEFT JOIN media ON dances.media_id = media.id;
+    `;
 
     const rows = await db.all(query);
 
@@ -26,8 +27,8 @@ export async function GET() {
       id: row.dance_id,
       title: row.title,
       description: row.description || "",
-      categoryId: row.category_id,
-      countryId: row.country_id,
+      category: row.category || "Unknown",
+      country: row.country || "Unknown",
       url: row.media_url || undefined,
       createdBy: row.created_by?.toString() || undefined
     }));
@@ -40,6 +41,7 @@ export async function GET() {
     );
   }
 }
+
 
 export async function POST(request: Request) {
   const db = await getDB();

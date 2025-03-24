@@ -10,7 +10,7 @@ import { Dance } from "@/lib/types";
 export default function DancePage() {
   const [dances, setDances] = useState<Dance[]>([]);
   const [search, setSearch] = useState("");
-  const [category, setCategory] = useState("");
+  const [searchField, setSearchField] = useState("title");
 
   useEffect(() => {
     async function fetchDances() {
@@ -28,19 +28,22 @@ export default function DancePage() {
   }, []);
 
   const filteredDances = dances.filter((dance) => {
-    const matchesSearch =
-      dance.title.toLowerCase().includes(search.toLowerCase()) ||
-      dance.description.toLowerCase().includes(search.toLowerCase());
+    const fieldValue = (dance as any)[searchField]?.toLowerCase?.() || "";
 
-    const matchesCategory = category ? dance.category === category : true;
+    const matchesSearch = fieldValue.includes(search.toLowerCase());
 
-    return matchesSearch && matchesCategory;
+    return matchesSearch;
   });
 
   return (
     <>
       <DanceLayout backgroundImage="/placeholder.svg?height=1080&width=1920">
-        <DanceSearchBar search={search} onSearchChange={setSearch} />
+        <DanceSearchBar
+          search={search}
+          onSearchChange={setSearch}
+          searchField={searchField}
+          onSearchFieldChange={setSearchField}
+        />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 px-4">
           {filteredDances.length > 0 ? (
