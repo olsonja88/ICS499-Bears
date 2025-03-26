@@ -85,6 +85,7 @@ const Chatbot = () => {
         }
     
         setPendingMessage("");
+        setMessage(""); // clears input after sending message
         setLoading(false);
     };
     
