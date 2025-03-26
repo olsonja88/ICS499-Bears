@@ -1,45 +1,69 @@
+"use client";
+
+import React, { useEffect, useState } from "react";
 import DanceLayout from "@/components/dance-layout";
 import DanceCard from "@/components/dance-card";
 import Chatbot from "@/components/chatbot";
+import DanceSearchBar from "@/components/dance-search-bar";
 import { Dance } from "@/lib/types";
-import { Button } from "@/components/button";
 
-async function getDances(): Promise<Dance[]> {
-  try {
-    const res = await fetch("http://localhost:3000/api/dance");
+export default function DancePage() {
+  const [dances, setDances] = useState<Dance[]>([]);
+  const [search, setSearch] = useState("");
+  const [searchField, setSearchField] = useState("title");
 
-    if (!res.ok) {
-      console.error("API error:", res.status, res.statusText);
-      return []; // Return empty array if API is unavailable
+  useEffect(() => {
+    async function fetchDances() {
+      try {
+        const res = await fetch("http://localhost:3000/api/dance");
+        if (!res.ok) throw new Error("Failed to fetch");
+        const data = await res.json();
+        setDances(data);
+      } catch (error) {
+        console.error("Error fetching dances:", error);
+      }
     }
 
-    return await res.json();
-  } catch (error) {
-    console.error("Fetch error:", error);
-    return []; // Return empty array if fetch fails (e.g., server down)
-  }
-}
+    fetchDances();
+  }, []);
 
-export default async function DancePage() {
-  const dances: Dance[] = await getDances();
+  const filteredDances = dances.filter((dance) => {
+    const fieldValue = (dance as any)[searchField]?.toLowerCase?.() || "";
+
+    const matchesSearch = fieldValue.includes(search.toLowerCase());
+
+    return matchesSearch;
+  });
 
   return (
     <>
       <DanceLayout backgroundImage="/placeholder.svg?height=1080&width=1920">
-        <div className="pt-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {dances.map((dance: Dance) => (
-            <DanceCard
-              key={dance.id}
-              id={dance.id.toString()} // Fixed: Now passing the correct id
-              title={dance.title}
-              description={dance.description}
-              image={dance.url ?? "/placeholder.jpg"}
-              country={dance.country}
-              category={dance.category}
-            />
-          ))}
+        <DanceSearchBar
+          search={search}
+          onSearchChange={setSearch}
+          searchField={searchField}
+          onSearchFieldChange={setSearchField}
+        />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 px-4">
+          {filteredDances.length > 0 ? (
+            filteredDances.map((dance) => (
+              <DanceCard
+                key={dance.id}
+                id={dance.id.toString()}
+                title={dance.title}
+                description={dance.description}
+                image={dance.url ?? "/placeholder.jpg"}
+                country={dance.country}
+                category={dance.category}
+              />
+            ))
+          ) : (
+            <p className="text-center col-span-full">No dances found.</p>
+          )}
         </div>
       </DanceLayout>
+
       <div className="flex justify-center mt-10 mb-10">
         <Chatbot />
       </div>
