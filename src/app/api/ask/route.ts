@@ -2,21 +2,11 @@ import { NextResponse } from "next/server";
 import { getDB } from "@/lib/db";
 import jwt from "jsonwebtoken";
 
-// ✅ LangChain imports
+// ✅ NEW: LangChain imports
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { HumanMessage, AIMessage, SystemMessage } from "@langchain/core/messages";
 import { BufferMemory } from "langchain/memory";
 import { ConversationChain } from "langchain/chains";
-
-// 🔐 Memory Store (shared across sessions)
-const userMemoryStore = new Map<string, BufferMemory>();
-function getMemoryForToken(token: string) {
-    if (!userMemoryStore.has(token)) {
-        const memory = new BufferMemory({ returnMessages: true });
-        userMemoryStore.set(token, memory);
-    }
-    return userMemoryStore.get(token)!;
-}
 
 export async function POST(req: Request) {
     try {
@@ -44,15 +34,15 @@ export async function POST(req: Request) {
             console.log("ℹ️ No token provided. Defaulting to viewer.");
         }
 
-        // ✅ Persistent memory per token
-        const memory = getMemoryForToken(token || "anonymous");
+        // ✅ LangChain memory and context
+        const memory = new BufferMemory({ returnMessages: true });
 
         const chain = new ConversationChain({
             llm: model,
             memory,
         });
 
-        // Push chat history into memory (optional backup)
+        // Push formatted history into memory
         for (const msg of chatHistory) {
             const m = msg.role === "user"
                 ? new HumanMessage(msg.content)
@@ -60,6 +50,7 @@ export async function POST(req: Request) {
             await memory.chatHistory.addMessage(m);
         }
 
+        // System prompt including description
         const systemPrompt = `
         You are an AI assistant specializing in dance-related topics.
         You must only answer questions about:
@@ -81,12 +72,13 @@ export async function POST(req: Request) {
         **DATABASE RULES:**
         - Tables: categories, countries, dances
         - INSERT or IGNORE new category or country if not found.
+        - Always include a description of the dance if known.
         - Only generate queries inside a \`\`\`sql block like this:
         \`\`\`sql
         INSERT OR IGNORE INTO categories (name) VALUES ('Hip-Hop');
         INSERT OR IGNORE INTO countries (name, code) VALUES ('USA', 'US');
-        INSERT INTO dances (title, category_id, country_id)
-        VALUES ('Electric Shuffle',
+        INSERT INTO dances (title, description, category_id, country_id)
+        VALUES ('Electric Shuffle', 'A high-energy modern dance that involves precise footwork.',
             (SELECT id FROM categories WHERE name = 'Hip-Hop'),
             (SELECT id FROM countries WHERE name = 'USA'));
         \`\`\`
@@ -113,7 +105,7 @@ export async function POST(req: Request) {
                 for (const sqlQuery of sqlQueries) {
                     const queries = sqlQuery.split(";").filter(q => q.trim());
 
-                    const danceMatch = sqlQuery.match(/INSERT INTO dances \(title, category_id, country_id\)\s*VALUES \('(.+?)'/);
+                    const danceMatch = sqlQuery.match(/INSERT INTO dances \(title, description, category_id, country_id\)\s*VALUES \('(.+?)'/);
                     const danceTitle = danceMatch ? danceMatch[1] : null;
 
                     if (danceTitle) {
