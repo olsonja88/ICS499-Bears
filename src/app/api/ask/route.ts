@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getDB } from "@/lib/db";
 import jwt from "jsonwebtoken";
 
-// ✅ NEW: LangChain imports
+// LangChain imports
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { HumanMessage, AIMessage, SystemMessage } from "@langchain/core/messages";
 import { BufferMemory } from "langchain/memory";
@@ -19,7 +19,7 @@ export async function POST(req: Request) {
             apiKey: process.env.GEMINI_API_KEY!,
         });
 
-        // 🔐 Token validation
+        // Token validation
         let userRole = "viewer";
         if (token) {
             try {
@@ -34,7 +34,7 @@ export async function POST(req: Request) {
             console.log("ℹ️ No token provided. Defaulting to viewer.");
         }
 
-        // ✅ LangChain memory and context
+        // LangChain memory and context
         const memory = new BufferMemory({ returnMessages: true });
 
         const chain = new ConversationChain({
