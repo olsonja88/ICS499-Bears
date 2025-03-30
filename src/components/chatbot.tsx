@@ -106,7 +106,7 @@ const Chatbot = () => {
     };
 
     return (
-        <div className="fixed bottom-5 right-5 z-50">
+        <div className="fixed bottom-5 right-5 z-[5000]">
             {/* Chatbot Toggle Button */}
             <button
                 className="p-3 bg-blue-500 text-white rounded-full shadow-md hover:bg-blue-600"
