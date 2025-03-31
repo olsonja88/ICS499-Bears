@@ -10,7 +10,8 @@ import { Dance } from "@/lib/types";
 export default function DancePage() {
   const [dances, setDances] = useState<Dance[]>([]);
   const [search, setSearch] = useState("");
-  const [searchField, setSearchField] = useState("title");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedCountry, setSelectedCountry] = useState("");
 
   useEffect(() => {
     async function fetchDances() {
@@ -27,12 +28,23 @@ export default function DancePage() {
     fetchDances();
   }, []);
 
+  const categories = [...new Set(dances.map((d) => d.category))].sort();
+  const countries = [...new Set(dances.map((d) => d.country))].sort();
+
   const filteredDances = dances.filter((dance) => {
-    const fieldValue = (dance as any)[searchField]?.toLowerCase?.() || "";
+    const searchLower = search.toLowerCase();
 
-    const matchesSearch = fieldValue.includes(search.toLowerCase());
+    const matchesSearch =
+      dance.title.toLowerCase().includes(searchLower) ||
+      dance.description.toLowerCase().includes(searchLower);
 
-    return matchesSearch;
+    const matchesCategory =
+      selectedCategory === "" || dance.category === selectedCategory;
+
+    const matchesCountry =
+      selectedCountry === "" || dance.country === selectedCountry;
+
+    return matchesSearch && matchesCategory && matchesCountry;
   });
 
   return (
@@ -41,8 +53,12 @@ export default function DancePage() {
         <DanceSearchBar
           search={search}
           onSearchChange={setSearch}
-          searchField={searchField}
-          onSearchFieldChange={setSearchField}
+          selectedCategory={selectedCategory}
+          onCategoryChange={setSelectedCategory}
+          selectedCountry={selectedCountry}
+          onCountryChange={setSelectedCountry}
+          categories={categories}
+          countries={countries}
         />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 px-4">
