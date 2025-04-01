@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS dances (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT NOT NULL,
     description TEXT,
+    keywords TEXT,
     category_id INTEGER,
     country_id INTEGER,
     media_id INTEGER,
@@ -37,6 +38,7 @@ CREATE TABLE IF NOT EXISTS dances (
     FOREIGN KEY (media_id) REFERENCES media(id) ON DELETE SET NULL ON UPDATE CASCADE,
     FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
+
 
 -- Media Table (Videos, Images)
 CREATE TABLE IF NOT EXISTS media (
@@ -120,19 +122,20 @@ INSERT INTO media (type, url) VALUES
 ('video', 'https://olsonja88.github.io/ICS499-Bears/assets/warehouse-breakdance.mp4'); -- 12
 
 -- Insert sample dances
-INSERT INTO dances (title, description, category_id, country_id, media_id, created_by) VALUES
-('Swan Lake', 'A classic ballet performance.', 1, 3, 1, 2), -- 1
-('Dock Dance', 'A dance performed on a dock.', 7, 1, 10, 3), -- 2
-('Street Popping', 'A freestyle hip-hop routine.', 2, 1, 2, 5),
-('Salsa Explosion', 'An energetic salsa performance.', 3, 6, 3, 3), -- 3
-('Los Muertos', 'A traditional Mexican dance.', 10, 6, 11, 4), -- 4
-('Passionate Tango', 'A fiery tango number.', 4, 6, 4, 4), -- 5
-('Broadway Jazz', 'A jazz routine with Broadway influences.', 5, 1, 5, 6), -- 6
-('Modern Flow', 'A contemporary dance performance.', 6, 10, 6, 7), -- 7
-('B-boy Battle', 'A competitive breakdancing event.', 7, 1, 7, 8), -- 8
-('Flamenco Fiesta', 'A traditional flamenco dance.', 8, 5, 8, 9), -- 9
-('Swing Revival', 'A lively swing dance.', 9, 1, 9, 10), -- 10
-('Warehouse Breakdancing', 'A breakdancing performance in a warehouse.', 7, 1, 12, 11); -- 11
+INSERT INTO dances (title, description, keywords, category_id, country_id, media_id, created_by) VALUES
+('Swan Lake', 'A classic ballet performance.', 'ballet, classical, performance', 1, 3, 1, 2), -- 1
+('Dock Dance', 'A dance performed on a dock.', 'water, outdoor, experimental', 7, 1, 10, 3), -- 2
+('Street Popping', 'A freestyle hip-hop routine.', 'hip-hop, popping, freestyle', 2, 1, 2, 5), -- 3
+('Salsa Explosion', 'An energetic salsa performance.', 'salsa, latin, energetic', 3, 6, 3, 3), -- 4
+('Los Muertos', 'A traditional Mexican dance.', 'folklore, mexico, tradition', 10, 6, 11, 4), -- 5
+('Passionate Tango', 'A fiery tango number.', 'tango, passionate, argentina', 4, 6, 4, 4), -- 6
+('Broadway Jazz', 'A jazz routine with Broadway influences.', 'jazz, broadway, musical', 5, 1, 5, 6), -- 7
+('Modern Flow', 'A contemporary dance performance.', 'contemporary, fluid, expressive', 6, 10, 6, 7), -- 8
+('B-boy Battle', 'A competitive breakdancing event.', 'b-boy, breakdance, battle', 7, 1, 7, 8), -- 9
+('Flamenco Fiesta', 'A traditional flamenco dance.', 'flamenco, spanish, rhythm', 8, 5, 8, 9), -- 10
+('Swing Revival', 'A lively swing dance.', 'swing, jazz, retro', 9, 1, 9, 10), -- 11
+('Warehouse Breakdancing', 'A breakdancing performance in a warehouse.', 'breakdance, urban, warehouse', 7, 1, 12, 11); -- 12
+
 
 -- Insert sample comments
 INSERT INTO comments (user_id, dance_id, content) VALUES

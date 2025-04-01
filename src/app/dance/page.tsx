@@ -36,7 +36,8 @@ export default function DancePage() {
 
     const matchesSearch =
       dance.title.toLowerCase().includes(searchLower) ||
-      dance.description.toLowerCase().includes(searchLower);
+      dance.description.toLowerCase().includes(searchLower) ||
+      dance.keywords?.toLowerCase().includes(searchLower);
 
     const matchesCategory =
       selectedCategory === "" || dance.category === selectedCategory;

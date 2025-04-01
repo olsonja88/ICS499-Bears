@@ -28,7 +28,7 @@ export default function DanceSearchBar({
       {/* Search Input - Title + Description */}
       <input
         type="text"
-        placeholder="Search title or description..."
+        placeholder="Search title, description, or keywords..."
         value={search}
         onChange={(e) => onSearchChange(e.target.value)}
         className="border border-gray-300 px-4 py-2 rounded-md w-full md:w-80 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
