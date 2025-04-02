@@ -121,8 +121,8 @@ INSERT INTO media (type, url) VALUES
 
 -- Insert sample dances
 INSERT INTO dances (title, description, category_id, country_id, media_id, created_by) VALUES
-('Swan Lake', 'A classic ballet performance.', 1, 3, 1, 2), -- 1
-('Dock Dance', 'A dance performed on a dock.', 7, 1, 10, 3), -- 2
+('Swan Lake', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', 1, 3, 1, 2), -- 1
+('Dock Dance', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', 7, 1, 10, 3), -- 2
 ('Street Popping', 'A freestyle hip-hop routine.', 2, 1, 2, 5),
 ('Salsa Explosion', 'An energetic salsa performance.', 3, 6, 3, 3), -- 3
 ('Los Muertos', 'A traditional Mexican dance.', 10, 6, 11, 4), -- 4
