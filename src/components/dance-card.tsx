@@ -20,14 +20,7 @@ function isVideoUrl(url: string): boolean {
 	return url.match(/\.(mp4|webm|ogg)$/i) !== null;
 }
 
-export default function DanceCard({
-	id,
-	title,
-	description,
-	image,
-	country,
-	category,
-}: DanceCardProps) {
+export default function DanceCard({ id, title, description, image, country, category }: DanceCardProps) {
 	const videoRef = useRef<HTMLVideoElement>(null);
 	const [isPlaying, setIsPlaying] = useState(false);
 	const [shouldStretchImage, setShouldStretchImage] = useState(false);
@@ -79,9 +72,7 @@ export default function DanceCard({
 				<CardHeader>
 					<CardTitle>{title}</CardTitle>
 				</CardHeader>
-				<CardContent className="flex flex-col px-4 h-[420px] items-center justify-center text-white text-sm">
-					Loading preview...
-				</CardContent>
+				<CardContent className="flex flex-col px-4 h-[420px] items-center justify-center text-white text-sm">Loading preview...</CardContent>
 				<CardFooter>
 					<Link href={`/dance/${id}`} passHref>
 						<Button variant="outline" className="w-full">
@@ -105,8 +96,7 @@ export default function DanceCard({
 						{isVideo ? (
 							<div
 								className="relative w-full h-full cursor-pointer group-hover:scale-105 transition-transform duration-300"
-								onClick={togglePlayPause}
-							>
+								onClick={togglePlayPause}>
 								<video
 									ref={videoRef}
 									src={image}
@@ -125,8 +115,7 @@ export default function DanceCard({
 											stroke="white"
 											strokeWidth="2"
 											strokeLinecap="round"
-											strokeLinejoin="round"
-										>
+											strokeLinejoin="round">
 											<polygon points="5 3 19 12 5 21 5 3" />
 										</svg>
 									</div>
@@ -149,8 +138,7 @@ export default function DanceCard({
 									const containerWidth = container?.width || 0;
 									const containerHeight = container?.height || 0;
 
-									const isTooSmall =
-										imageWidth < containerWidth * 0.9 || imageHeight < containerHeight * 0.9;
+									const isTooSmall = imageWidth < containerWidth * 0.9 || imageHeight < containerHeight * 0.9;
 
 									setShouldStretchImage(isTooSmall);
 								}}
@@ -160,17 +148,16 @@ export default function DanceCard({
 
 					{/* Expandable Description on Hover */}
 					<div className="relative transition-all duration-300 overflow-hidden max-h-[3.5rem] group-hover:max-h-32">
-						<p className="text-sm text-white text-center leading-snug shadow-md mt-2">
-							{description}
-						</p>
+						<p className="text-sm text-white text-center leading-snug shadow-md mt-2">{description}</p>
 					</div>
 				</div>
 			</CardContent>
 
 			<CardFooter>
 				<Link href={`/dance/${id}`} passHref>
-					<Button variant="outline" className="w-full">
-						Learn More
+					<Button variant="outline" className="w-full relative overflow-hidden transition-all duration-300 hover:scale-105 group">
+						<span className="relative z-10">Learn More</span>
+						<span className="absolute bottom-0 left-0 w-full h-[2px] bg-black scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
 					</Button>
 				</Link>
 			</CardFooter>
