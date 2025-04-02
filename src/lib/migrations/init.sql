@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS dances (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT NOT NULL,
     description TEXT,
+    keywords TEXT,
     category_id INTEGER,
     country_id INTEGER,
     media_id INTEGER,
@@ -37,6 +38,7 @@ CREATE TABLE IF NOT EXISTS dances (
     FOREIGN KEY (media_id) REFERENCES media(id) ON DELETE SET NULL ON UPDATE CASCADE,
     FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
+
 
 -- Media Table (Videos, Images)
 CREATE TABLE IF NOT EXISTS media (
@@ -133,6 +135,7 @@ INSERT INTO dances (title, description, category_id, country_id, media_id, creat
 ('Flamenco Fiesta', 'A passionate Spanish folk dance, Flamenco Fiesta blends percussive footwork, intricate hand gestures (floreo), and intense emotion. Dancers strike poses with proud posture, stamping rhythmic patterns (zapateado) in dialogue with live guitar and clapping (palmas). Voluminous dresses twirl dramatically with each spin, while shawls and castanets accentuate the dancer’s expression. Flamenco’s spirit is fierce — channeling joy, sorrow, and defiance through every stomp and stare.', 8, 5, 8, 9), -- 9
 ('Swing Revival', 'Set to upbeat jazz and big band swing, Swing Revival reimagines vintage partner dancing with a modern twist. Dancers perform fast-paced Lindy Hop steps, Charleston kicks, and aerial lifts that harken back to the 1940s jitterbug era. It’s playful, fast, and full of personality — with couples breaking apart and reuniting in time with the brass section’s blast. The vibe is retro cool: suspenders, slicked-back hair, polka dots, and boundless energy.', 9, 1, 9, 10), -- 10
 ('Warehouse Breakdancing', 'In a gritty, industrial space with exposed brick and flickering fluorescent lights, dancers take over the warehouse with raw breakdancing power. Echoes of boom bap and reverb-rich beats guide them through windmills, air flares, and elbow freezes. The dust kicks up beneath their moves, spotlighting acrobatic solos and synchronized group routines. The setting adds weight to their defiance — transforming urban decay into a stage for creativity and rebellion.', 7, 1, 12, 11); -- 11
+
 
 -- Insert sample comments
 INSERT INTO comments (user_id, dance_id, content) VALUES
