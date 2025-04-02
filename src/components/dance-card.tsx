@@ -155,8 +155,12 @@ export default function DanceCard({ id, title, description, image, country, cate
 
 			<CardFooter>
 				<Link href={`/dance/${id}`} passHref>
-					<Button variant="outline" className="w-full relative overflow-hidden transition-all duration-300 hover:scale-105 group">
-						<span className="relative z-10">Learn More</span>
+					<Button
+						variant="outline"
+						className="w-full relative overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95 group">
+						<span className="relative z-10 flex items-center justify-center gap-1">
+							Learn More
+						</span>
 						<span className="absolute bottom-0 left-0 w-full h-[2px] bg-black scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
 					</Button>
 				</Link>
