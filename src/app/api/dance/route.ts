@@ -10,6 +10,7 @@ export async function GET() {
         dances.id AS dance_id,
         dances.title,
         dances.description,
+        dances.keywords,
         categories.name AS category,
         countries.name AS country,
         dances.created_by,
@@ -27,8 +28,11 @@ export async function GET() {
       id: row.dance_id,
       title: row.title,
       description: row.description || "",
+      keywords: row.keywords || "",
       category: row.category || "Unknown",
       country: row.country || "Unknown",
+      categoryId: row.category_id || null,
+      countryId: row.country_id || null,
       url: row.media_url || undefined,
       createdBy: row.created_by?.toString() || undefined
     }));

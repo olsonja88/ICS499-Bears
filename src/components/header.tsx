@@ -108,7 +108,10 @@ export default function Header() {
                 </Link>
 
                 {isAdmin && (
-                  <Link href="/admin" className="bg-red-500 text-white px-3 py-2 rounded-md text-sm font-medium">
+                  <Link
+                    href="/admin"
+                    className="bg-red-500 text-white px-3 py-2 rounded-md text-sm font-medium"
+                  >
                     Admin Panel
                   </Link>
                 )}
@@ -168,7 +171,7 @@ export default function Header() {
                 Home
               </Link>
               <Link
-                href="/dances"
+                href="/dance"
                 className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
               >
                 Dances
