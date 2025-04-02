@@ -102,9 +102,11 @@ export default function DanceCard({ id, title, description, image, country, cate
 
 			<CardContent className="flex flex-col px-4">
 				<div className="flex flex-col justify-between h-[420px] w-full">
-					<div className={`w-full ${mediaHeight} bg-black flex items-center justify-center overflow-hidden rounded-md`}>
+					<div className={`w-full ${mediaHeight} bg-black flex items-center justify-center overflow-hidden rounded-md group`}>
 						{isVideo ? (
-							<div className="relative w-full h-full cursor-pointer" onClick={togglePlayPause}>
+							<div
+								className="relative w-full h-full cursor-pointer group-hover:scale-105 transition-transform duration-300"
+								onClick={togglePlayPause}>
 								<video
 									ref={videoRef}
 									src={image}
@@ -135,7 +137,7 @@ export default function DanceCard({ id, title, description, image, country, cate
 								alt={title}
 								width={600}
 								height={0}
-								className={`transition-all duration-300 ${
+								className={`transition-transform duration-300 group-hover:scale-110 ${ // hover zoom in scale
 									shouldStretchImage ? "w-full h-full object-cover" : `w-auto ${mediaObject}`
 								}`}
 								onLoadingComplete={(img) => {
