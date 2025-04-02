@@ -89,11 +89,12 @@ export default function DanceCard({ id, title, description, image, country, cate
 			<CardHeader>
 				<CardTitle>{title}</CardTitle>
 			</CardHeader>
-
+      {/* Media Preview */}
 			<CardContent className="flex flex-col px-4">
 				<div className="flex flex-col justify-between h-[420px] w-full">
 					<div className={`w-full ${mediaHeight} bg-black flex items-center justify-center overflow-hidden rounded-md group`}>
 						{isVideo ? (
+              // Video Preview
 							<div
 								className="relative w-full h-full cursor-pointer group-hover:scale-105 transition-transform duration-300"
 								onClick={togglePlayPause}>
@@ -106,6 +107,7 @@ export default function DanceCard({ id, title, description, image, country, cate
 									className={`h-full ${mediaObject} ${isPortrait ? "w-auto" : "w-full"}`}
 								/>
 								{!isPlaying && (
+                  // Play Button Overlay
 									<div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30">
 										<svg
 											width="64"
@@ -122,6 +124,7 @@ export default function DanceCard({ id, title, description, image, country, cate
 								)}
 							</div>
 						) : (
+              // Image Preview
 							<Image
 								src={image}
 								alt={title}
@@ -130,6 +133,7 @@ export default function DanceCard({ id, title, description, image, country, cate
 								className={`transition-transform duration-300 group-hover:scale-110 ${
 									shouldStretchImage ? "w-full h-full object-cover" : `w-auto ${mediaObject}`
 								}`}
+                // Stretch Image if too small
 								onLoadingComplete={(img) => {
 									const container = img.parentElement?.getBoundingClientRect();
 									const imageWidth = img.naturalWidth;
@@ -145,22 +149,19 @@ export default function DanceCard({ id, title, description, image, country, cate
 							/>
 						)}
 					</div>
-
 					{/* Expandable Description on Hover */}
 					<div className="relative transition-all duration-300 overflow-hidden max-h-[3.5rem] group-hover:max-h-32">
 						<p className="text-sm text-white text-center leading-snug shadow-md mt-2">{description}</p>
 					</div>
 				</div>
 			</CardContent>
-
 			<CardFooter>
 				<Link href={`/dance/${id}`} passHref>
+          {/* Learn More Button */}
 					<Button
 						variant="outline"
 						className="w-full relative overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95 group">
-						<span className="relative z-10 flex items-center justify-center gap-1">
-							Learn More
-						</span>
+						<span className="relative z-10 flex items-center justify-center gap-1">Learn More</span>
 						<span className="absolute bottom-0 left-0 w-full h-[2px] bg-black scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
 					</Button>
 				</Link>
