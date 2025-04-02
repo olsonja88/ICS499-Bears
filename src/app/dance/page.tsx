@@ -27,7 +27,7 @@ export default function DancePage() {
 
     fetchDances();
   }, []);
-
+  
   const categories = [...new Set(dances.map((d) => d.category))].sort();
   const countries = [...new Set(dances.map((d) => d.country))].sort();
 

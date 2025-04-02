@@ -49,13 +49,13 @@ export default function MapsPage() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
+    <div className="flex flex-col items-center pt-16 h-screen">
       <h1 className="text-3xl font-bold mb-6">Click on a Country to See Dances</h1>
 
       <MapContainer
         center={[20, 0]}
         zoom={3}
-        style={{ height: "500px", width: "80%", borderRadius: "10px", boxShadow: "0 4px 10px rgba(0,0,0,0.2)" }}
+        style={{ height: "calc(100vh - 12rem)", width: "80%", borderRadius: "10px", boxShadow: "0 4px 10px rgba(0,0,0,0.2)" }}
       >
         <TileLayer
           url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
