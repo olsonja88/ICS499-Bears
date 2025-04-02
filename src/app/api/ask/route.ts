@@ -73,6 +73,7 @@ export async function POST(req: Request) {
         - Tables: categories, countries, dances
         - INSERT or IGNORE new category or country if not found.
         - Always include a description of the dance if known.
+        - Descriptions must be concise and relevant to the dance style, aim for at least 200 characters.
         - Only generate queries inside a \`\`\`sql block like this:
         \`\`\`sql
         INSERT OR IGNORE INTO categories (name) VALUES ('Hip-Hop');
