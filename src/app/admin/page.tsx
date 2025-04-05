@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import UserList from "@/components/userlist";
 import DanceList from "@/components/DanceList";
 
@@ -10,6 +10,7 @@ export default function AdminPage() {
     const [isAdmin, setIsAdmin] = useState(false);
     const [activeTab, setActiveTab] = useState<'users' | 'dances'>('users');
     const router = useRouter();
+    const searchParams = useSearchParams();
 
     useEffect(() => {
         const checkAuth = async () => {
@@ -37,6 +38,14 @@ export default function AdminPage() {
 
         checkAuth();
     }, [router]);
+
+    // Set active tab based on URL query parameter
+    useEffect(() => {
+        const tabParam = searchParams.get('tab');
+        if (tabParam === 'dances') {
+            setActiveTab('dances');
+        }
+    }, [searchParams]);
 
     if (isLoading) return <p className="text-white">Loading...</p>;
     if (!isAdmin) return null;

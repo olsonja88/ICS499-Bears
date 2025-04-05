@@ -31,8 +31,12 @@ export default function DanceList() {
         if (!confirm("Are you sure you want to delete this dance?")) return;
 
         try {
-            const response = await fetch(`/api/dance/${id}`, {
+            const response = await fetch(`/api/dance`, {
                 method: "DELETE",
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ id }),
             });
 
             if (!response.ok) throw new Error("Failed to delete dance");
