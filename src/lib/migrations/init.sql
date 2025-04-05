@@ -21,8 +21,7 @@ CREATE TABLE IF NOT EXISTS countries (
     name TEXT UNIQUE NOT NULL,
     code TEXT UNIQUE NOT NULL,
     lat REAL NOT NULL,
-    lng REAL NOT NULL,
-    description TEXT
+    lng REAL NOT NULL
 );
 
 
@@ -97,6 +96,9 @@ INSERT INTO categories (name, description) VALUES
 ('Folk', 'Traditional dances from various cultures.');
 
 -- Insert sample countries
+-- https://www.worldometers.info/geography/alphabetical-list-of-countries/
+-- list of countries in alphabetical order with #
+
 INSERT INTO countries (name, code, lat, lng) VALUES
 ('Afghanistan', 'AF', 33.93911, 67.709953),
 ('Albania', 'AL', 41.153332, 20.168331),
@@ -293,7 +295,6 @@ INSERT INTO countries (name, code, lat, lng) VALUES
 ('Yemen', 'YE', 15.552727, 48.516388),
 ('Zambia', 'ZM', -13.133897, 27.849332),
 ('Zimbabwe', 'ZW', -19.015438, 29.154857);
-
 
 -- Insert sample media
 INSERT INTO media (type, url) VALUES

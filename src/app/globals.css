@@ -42,3 +42,10 @@ input, h2 {
 .chat-response li {
   margin-left: 20px;
 }
+
+.custom-pin-icon:hover {
+  transform: scale(1.15);
+  transition: transform 0.2s ease;
+  filter: drop-shadow(0 0 4px #ff5e5e);
+}
+
