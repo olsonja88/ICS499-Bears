@@ -1,13 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import UserList from "@/components/userlist";
+import DanceList from "@/components/DanceList";
 
 export default function AdminPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [isAdmin, setIsAdmin] = useState(false);
+    const [activeTab, setActiveTab] = useState<'users' | 'dances'>('users');
     const router = useRouter();
+    const searchParams = useSearchParams();
 
     useEffect(() => {
         const checkAuth = async () => {
@@ -36,16 +39,57 @@ export default function AdminPage() {
         checkAuth();
     }, [router]);
 
-    if (isLoading) return <p>Loading...</p>;
+    // Set active tab based on URL query parameter
+    useEffect(() => {
+        const tabParam = searchParams.get('tab');
+        if (tabParam === 'dances') {
+            setActiveTab('dances');
+        }
+    }, [searchParams]);
+
+    if (isLoading) return <p className="text-white">Loading...</p>;
     if (!isAdmin) return null;
 
     return (
-        <div>
-            <h1>Admin Panel</h1>
-            <p>Welcome, Admin!</p>
-            
-            {/* Display User Management */}
-            <UserList />
+        <div className="min-h-screen bg-black text-white">
+            <div className="container mx-auto px-4 py-8">
+                <h1 className="text-3xl font-bold mb-8 text-white">Admin Panel</h1>
+                
+                {/* Tab Navigation */}
+                <div className="border-b border-gray-700 mb-8">
+                    <nav className="-mb-px flex space-x-8">
+                        <button
+                            onClick={() => setActiveTab('users')}
+                            className={`${
+                                activeTab === 'users'
+                                ? 'border-blue-500 text-blue-400'
+                                : 'border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-600'
+                            } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+                        >
+                            User Management
+                        </button>
+                        <button
+                            onClick={() => setActiveTab('dances')}
+                            className={`${
+                                activeTab === 'dances'
+                                ? 'border-blue-500 text-blue-400'
+                                : 'border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-600'
+                            } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+                        >
+                            Dance Management
+                        </button>
+                    </nav>
+                </div>
+
+                {/* Tab Content */}
+                <div className="mt-4">
+                    {activeTab === 'users' ? (
+                        <UserList />
+                    ) : (
+                        <DanceList />
+                    )}
+                </div>
+            </div>
         </div>
     );
 }
