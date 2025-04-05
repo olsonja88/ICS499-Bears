@@ -115,8 +115,13 @@ export default function DanceForm({ initialData, mode }: DanceFormProps) {
       const data = await response.json()
       console.log('Success:', data)
       
-      // Redirect to the dance list or view page after success
-      window.location.href = '/dance'
+      // Check if user is admin and redirect accordingly
+      const currentUser = getCurrentUser()
+      if (currentUser?.isAdmin) {
+        window.location.href = '/admin?tab=dances'
+      } else {
+        window.location.href = '/dance'
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong')
     } finally {
@@ -146,7 +151,13 @@ export default function DanceForm({ initialData, mode }: DanceFormProps) {
         throw new Error('Failed to delete dance')
       }
 
-      router.push('/dance')
+      // Check if user is admin and redirect accordingly
+      const currentUser = getCurrentUser()
+      if (currentUser?.isAdmin) {
+        router.push('/admin?tab=dances')
+      } else {
+        router.push('/dance')
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to delete dance')
       setIsDeleting(false)
