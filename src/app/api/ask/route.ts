@@ -10,9 +10,9 @@ import { ConversationChain } from "langchain/chains";
 
 export async function POST(req: Request) {
     try {
-        console.log("✅ API `/api/ask/route.ts` triggered");
+        console.log(" API `/api/ask/route.ts` triggered");
         const { userMessage, chatHistory = [], token } = await req.json();
-        console.log("📝 User Message:", userMessage);
+        console.log(" User Message:", userMessage);
 
         const model = new ChatGoogleGenerativeAI({
             model: "gemini-1.5-flash",
@@ -23,15 +23,15 @@ export async function POST(req: Request) {
         let userRole = "viewer";
         if (token) {
             try {
-                console.log("🔑 Received Token:", token);
+                console.log(" Received Token:", token);
                 const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
                 userRole = decoded.role || "viewer";
-                console.log("✅ Decoded User Role:", userRole);
+                console.log(" Decoded User Role:", userRole);
             } catch (err) {
-                console.log("❌ Invalid Token:", (err as Error).message);
+                console.log(" Invalid Token:", (err as Error).message);
             }
         } else {
-            console.log("ℹ️ No token provided. Defaulting to viewer.");
+            console.log(" No token provided. Defaulting to viewer.");
         }
 
         // LangChain memory and context
@@ -113,21 +113,21 @@ export async function POST(req: Request) {
                     if (danceTitle) {
                         const existingDance = await db.get(`SELECT id FROM dances WHERE title = ?`, [danceTitle]);
                         if (existingDance) {
-                            dbResponse = `⚠️ Dance \"${danceTitle}\" already exists in the database.`;
+                            dbResponse = ` Dance \"${danceTitle}\" already exists in the database.`;
                             continue;
                         }
                     }
 
                     for (const query of queries) {
-                        console.log("▶ Running query:", query);
+                        console.log(" Running query:", query);
                         await db.run(query.trim());
                     }
 
-                    dbResponse = `✅ Successfully inserted dance: ${danceTitle}.`;
+                    dbResponse = ` Successfully inserted dance: ${danceTitle}.`;
                 }
             } catch (err) {
-                console.error("❌ SQL Execution Error:", err);
-                dbResponse = `❌ Error executing SQL query: ${(err as Error).message}`;
+                console.error(" SQL Execution Error:", err);
+                dbResponse = ` Error executing SQL query: ${(err as Error).message}`;
             }
         }
 
@@ -136,7 +136,7 @@ export async function POST(req: Request) {
         });
 
     } catch (error) {
-        console.error("❌ API Error:", error);
+        console.error(" API Error:", error);
         return NextResponse.json({ error: "Failed to generate response" }, { status: 500 });
     }
 }
