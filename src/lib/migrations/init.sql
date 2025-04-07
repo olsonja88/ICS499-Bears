@@ -24,6 +24,14 @@ CREATE TABLE IF NOT EXISTS countries (
     lng REAL NOT NULL
 );
 
+-- Country Descriptions Table (for Google Gemini responses)
+CREATE TABLE IF NOT EXISTS country_descriptions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    country_id INTEGER UNIQUE NOT NULL,
+    description TEXT NOT NULL,
+    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (country_id) REFERENCES countries(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
 
 -- Dances Table
 CREATE TABLE IF NOT EXISTS dances (
