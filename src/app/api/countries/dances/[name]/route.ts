@@ -8,6 +8,7 @@ export async function GET(
 ) {
   try {
     if (!params || !params.name) {
+      console.error("Missing country name parameter");
       return NextResponse.json(
         { error: "Country name is required" },
         { status: 400 }
@@ -15,6 +16,8 @@ export async function GET(
     }
 
     const countryName = params.name;
+    console.log(`Fetching dances for country: ${countryName}`);
+    
     const db = await getDB();
     
     // First, get the country ID from the name
@@ -22,11 +25,14 @@ export async function GET(
     const country = await db.get(countryQuery, [countryName]);
     
     if (!country) {
+      console.error(`Country not found: ${countryName}`);
       return NextResponse.json(
         { error: `Country "${countryName}" not found` },
         { status: 404 }
       );
     }
+    
+    console.log(`Found country ID: ${country.id} for ${countryName}`);
     
     // Then, get all dances for this country
     const query = `
@@ -48,6 +54,7 @@ export async function GET(
     `;
 
     const rows = await db.all(query, [country.id]);
+    console.log(`Found ${rows.length} dances for country ID ${country.id}`);
 
     const dances: Dance[] = rows.map(row => ({
       id: row.dance_id,
