@@ -27,7 +27,7 @@ input, h2 {
 }
 
 .chat-response {
-  background-color: #f8f9fa; /* Light gray */
+  background-color: #f8f9fa; 
   padding: 16px;
   border-radius: 8px;
   border: 1px solid #ccc;
