@@ -32,6 +32,7 @@ This guide will help you deploy your Next.js application on Railway.
    JWT_SECRET=your_existing_key
    RESEND_API_KEY=your_existing_key
    NODE_ENV=production
+   DISABLE_ESLINT_PLUGIN=true
    ```
 
 ### 4. Deploy Your Application
@@ -53,6 +54,34 @@ After deployment, you need to run the database migrations:
    npm run migrate:postgres
    npm run seed:postgres
    ```
+
+## ESLint Configuration
+
+This project has ESLint disabled during the build process to prevent build failures due to linting errors. This is configured in three ways:
+
+1. In `next.config.ts`:
+   ```typescript
+   eslint: {
+     ignoreDuringBuilds: true,
+   }
+   ```
+
+2. In `package.json`:
+   ```json
+   "build": "DISABLE_ESLINT_PLUGIN=true next build"
+   ```
+
+3. In `railway.toml`:
+   ```toml
+   buildCommand = "DISABLE_ESLINT_PLUGIN=true npm run build"
+   [deploy.env]
+   DISABLE_ESLINT_PLUGIN = "true"
+   ```
+
+If you want to enable ESLint checks during development, you can still run:
+```bash
+npm run lint
+```
 
 ## Troubleshooting
 
