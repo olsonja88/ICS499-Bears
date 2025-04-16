@@ -1,13 +1,11 @@
 import { NextResponse } from "next/server";
-import { getDB } from "@/lib/db";
+import { executeQueryRun } from "@/lib/db";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import { Database } from "sqlite";
 
 export async function POST(req: Request) {
     try {
         const { token, password, userId } = await req.json();
-        const db: Database = await getDB();
 
         // Verify JWT token (throws error if invalid or expired)
         const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { email: string; role: string };
@@ -15,7 +13,10 @@ export async function POST(req: Request) {
         // If userId is provided and user is admin, allow changing other user's password
         if (userId && decoded.role === "admin") {
             const hashedPassword = await bcrypt.hash(password, 10);
-            const result = await db.run("UPDATE users SET password_hash = ? WHERE id = ?", [hashedPassword, userId]);
+            const result = await executeQueryRun(
+                "UPDATE users SET password_hash = ? WHERE id = ?", 
+                [hashedPassword, userId]
+            );
             
             if (result.changes === 0) {
                 return NextResponse.json({ message: "User not found." }, { status: 400 });
@@ -27,7 +28,10 @@ export async function POST(req: Request) {
         // Otherwise, only allow users to change their own password
         const email = decoded.email;
         const hashedPassword = await bcrypt.hash(password, 10);
-        const result = await db.run("UPDATE users SET password_hash = ? WHERE email = ?", [hashedPassword, email]);
+        const result = await executeQueryRun(
+            "UPDATE users SET password_hash = ? WHERE email = ?", 
+            [hashedPassword, email]
+        );
 
         if (result.changes === 0) {
             return NextResponse.json({ message: "User not found." }, { status: 400 });

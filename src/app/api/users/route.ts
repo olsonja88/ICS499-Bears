@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import { getDB } from "@/lib/db";
-import { Database } from "sqlite";
+import { executeQuery, executeQueryRun } from "@/lib/db";
 
 interface User {
     id?: number;
@@ -13,9 +12,7 @@ interface User {
 // gets all users
 export async function GET() {
     try {
-        const db: Database = await getDB();
-        const users: User[] = await db.all("SELECT id, username, email, role FROM users");
-
+        const users: User[] = await executeQuery("SELECT id, username, email, role FROM users");
         return NextResponse.json(users);
     } catch (error) {
         console.error("GET Users Error:", error);
@@ -35,8 +32,7 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
         }
 
-        const db: Database = await getDB();
-        const result = await db.run(
+        const result = await executeQueryRun(
             "INSERT INTO users (username, email, password_hash, role) VALUES (?, ?, ?, ?)",
             [username, email, password_hash, role]
         );
@@ -60,8 +56,7 @@ export async function PUT(req: Request) {
             return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
         }
 
-        const db: Database = await getDB();
-        const result = await db.run(
+        const result = await executeQueryRun(
             "UPDATE users SET username = ?, email = ?, role = ? WHERE id = ?",
             [username, email, role, id]
         );
@@ -86,8 +81,7 @@ export async function DELETE(req: Request) {
             return NextResponse.json({ error: "User ID is required" }, { status: 400 });
         }
 
-        const db: Database = await getDB();
-        const result = await db.run("DELETE FROM users WHERE id = ?", [id]);
+        const result = await executeQueryRun("DELETE FROM users WHERE id = ?", [id]);
 
         if (result.changes === 0) {
             return NextResponse.json({ error: "User not found" }, { status: 404 });

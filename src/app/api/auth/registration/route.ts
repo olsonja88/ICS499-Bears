@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getDB } from "@/lib/db";
+import { executeQuerySingle, executeQueryRun } from "@/lib/db";
 import bcrypt from "bcrypt";
 
 interface SignupRequest {
@@ -16,10 +16,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "All fields are required" }, { status: 400 });
     }
 
-    const db = await getDB();
-
     // Check if the username or email already exists
-    const existingUser = await db.get(
+    const existingUser = await executeQuerySingle(
       "SELECT id FROM users WHERE username = ? OR email = ?",
       [username, email]
     );
@@ -32,7 +30,7 @@ export async function POST(req: Request) {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Insert new user
-    await db.run(
+    await executeQueryRun(
       "INSERT INTO users (username, email, password_hash, role) VALUES (?, ?, ?, 'viewer')",
       [username, email, hashedPassword]
     );
