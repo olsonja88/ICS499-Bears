@@ -7,6 +7,7 @@
     "migrate:win": "(if exist dev.db del dev.db) && (if not exist dev.db sqlite3 dev.db \"VACUUM;\") && sqlite3 dev.db < src/lib/migrations/init.sql",
     "migrate:unix": "(test -f dev.db && rm dev.db || echo 'No existing DB') && (test -f dev.db || sqlite3 dev.db \"VACUUM;\") && sqlite3 dev.db < src/lib/migrations/init.sql",
     "migrate": "npm run migrate:win || npm run migrate:unix",
+    "migrate:postgres": "ts-node src/lib/migrations/migrate.ts",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -63,6 +64,7 @@
     "eslint-config-next": "15.1.6",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
+    "ts-node": "^10.9.2",
     "typescript": "^5"
   }
 }
