@@ -21,7 +21,7 @@ async function resetPostgres() {
     
     // Execute each statement
     for (const statement of statements) {
-      if (statement.toLowerCase().includes('insert into')) {
+      if (statement.toLowerCase().includes('drop')) {
         console.log(`Executing: ${statement.substring(0, 50)}...`);
         await pool.query(statement);
       }

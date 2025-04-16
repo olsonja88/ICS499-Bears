@@ -56,4 +56,23 @@ CREATE TABLE IF NOT EXISTS dances (
     FOREIGN KEY (country_id) REFERENCES countries(id) ON DELETE SET NULL,
     FOREIGN KEY (media_id) REFERENCES media(id) ON DELETE SET NULL,
     FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE
-); 
+);
+
+-- Comments Table
+CREATE TABLE IF NOT EXISTS comments (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER,
+    dance_id INTEGER,
+    content TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (dance_id) REFERENCES dances(id) ON DELETE CASCADE
+);
+
+-- User Roles
+CREATE TABLE IF NOT EXISTS user_roles (
+    user_id INTEGER,
+    role TEXT CHECK(role IN ('admin', 'creator', 'viewer')),
+    PRIMARY KEY (user_id, role),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
