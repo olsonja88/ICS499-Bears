@@ -1,23 +1,29 @@
 import { NextResponse } from "next/server";
-import { getDB } from "@/lib/db";
+import { getDB, executeQuery } from "@/lib/db";
+
+// Define the correct type for the context parameter
+type RouteContext = {
+  params: {
+    danceId: string;
+  };
+};
 
 export async function GET(
   request: Request,
-  { params }: { params: { danceId: string } }
+  context: RouteContext
 ) {
   try {
-    const db = await getDB();
     const query = `
       SELECT 
         comments.*,
         users.username
       FROM comments
       LEFT JOIN users ON comments.user_id = users.id
-      WHERE dance_id = ?
+      WHERE dance_id = $1
       ORDER BY comments.created_at DESC;
     `;
 
-    const comments = await db.all(query, [params.danceId]);
+    const comments = await executeQuery(query, [context.params.danceId]);
 
     return NextResponse.json(comments);
   } catch (error) {

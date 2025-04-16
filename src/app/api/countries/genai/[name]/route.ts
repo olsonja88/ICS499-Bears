@@ -4,16 +4,23 @@ import { getDB } from "@/lib/db";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
+// Define the correct type for the context parameter
+type RouteContext = {
+  params: {
+    name: string;
+  };
+};
+
 export async function GET(
   request: Request,
-  { params }: { params: { name: string } }
+  context: RouteContext
 ) {
   try {
-    if (!params) {
+    if (!context.params) {
       return NextResponse.json({ error: "Route parameters not available" }, { status: 400 });
     }
 
-    const { name } = await params;
+    const { name } = context.params;
 
     if (!name) {
       return NextResponse.json({ error: "Country name is required" }, { status: 400 });
