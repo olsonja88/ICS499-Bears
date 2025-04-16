@@ -1,19 +1,12 @@
 import { NextResponse } from "next/server";
 import { getDB, executeQuerySingle } from "@/lib/db";
 
-// Define the correct type for the context parameter
-type RouteContext = {
-  params: {
-    id: string;
-  };
-};
-
 export async function GET(
   request: Request,
-  context: RouteContext
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = context.params;
+    const { id } = params;
 
     if (!id) {
       return NextResponse.json({ error: "Country ID is required" }, { status: 400 });
@@ -27,8 +20,9 @@ export async function GET(
 
     return NextResponse.json(country);
   } catch (error) {
+    console.error("Error fetching country:", error);
     return NextResponse.json(
-      { error: "Database error", details: error },
+      { error: "Failed to fetch country" },
       { status: 500 }
     );
   }

@@ -2,19 +2,12 @@ import { NextResponse } from "next/server";
 import { getDB, executeQuerySingle, executeQuery } from "@/lib/db";
 import { Dance } from "@/lib/types";
 
-// Define the correct type for the context parameter
-type RouteContext = {
-  params: {
-    name: string;
-  };
-};
-
 export async function GET(
   request: Request,
-  context: RouteContext
+  { params }: { params: { name: string } }
 ) {
   try {
-    if (!context.params || !context.params.name) {
+    if (!params.name) {
       console.error("Missing country name parameter");
       return NextResponse.json(
         { error: "Country name is required" },
@@ -22,7 +15,7 @@ export async function GET(
       );
     }
 
-    const countryName = context.params.name;
+    const countryName = params.name;
     console.log(`Fetching dances for country: ${countryName}`);
     
     // First, get the country ID from the name

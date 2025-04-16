@@ -1,16 +1,9 @@
 import { NextResponse } from "next/server";
 import { getDB, executeQuery } from "@/lib/db";
 
-// Define the correct type for the context parameter
-type RouteContext = {
-  params: {
-    danceId: string;
-  };
-};
-
 export async function GET(
   request: Request,
-  context: RouteContext
+  { params }: { params: { danceId: string } }
 ) {
   try {
     const query = `
@@ -23,12 +16,13 @@ export async function GET(
       ORDER BY comments.created_at DESC;
     `;
 
-    const comments = await executeQuery(query, [context.params.danceId]);
+    const comments = await executeQuery(query, [params.danceId]);
 
     return NextResponse.json(comments);
   } catch (error) {
+    console.error("Error fetching comments:", error);
     return NextResponse.json(
-      { error: "Database error", details: error },
+      { error: "Failed to fetch comments" },
       { status: 500 }
     );
   }
