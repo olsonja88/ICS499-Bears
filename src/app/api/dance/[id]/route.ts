@@ -4,9 +4,11 @@ import { Dance } from "@/lib/types";
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
+    
     const query = `SELECT 
       dances.id AS dance_id,
       dances.title,
@@ -28,7 +30,7 @@ export async function GET(
       LEFT JOIN countries ON dances.country_id = countries.id
       WHERE dances.id = $1;`;
 
-    const row = await executeQuerySingle(query, [params.id]);
+    const row = await executeQuerySingle(query, [id]);
 
     if (!row) {
       return NextResponse.json(

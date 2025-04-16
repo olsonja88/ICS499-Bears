@@ -4,10 +4,12 @@ import { Dance } from "@/lib/types";
 
 export async function GET(
   request: Request,
-  { params }: { params: { name: string } }
+  { params }: { params: Promise<{ name: string }> }
 ) {
   try {
-    if (!params.name) {
+    const { name } = await params;
+    
+    if (!name) {
       console.error("Missing country name parameter");
       return NextResponse.json(
         { error: "Country name is required" },
@@ -15,7 +17,7 @@ export async function GET(
       );
     }
 
-    const countryName = params.name;
+    const countryName = name;
     console.log(`Fetching dances for country: ${countryName}`);
     
     // First, get the country ID from the name

@@ -3,12 +3,14 @@ import { executeQuery } from "@/lib/db";
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
+    
     const result = await executeQuery(
       "SELECT * FROM categories WHERE id = ?",
-      [params.id]
+      [id]
     );
 
     if (!result || result.length === 0) {
@@ -30,9 +32,10 @@ export async function GET(
 
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const body = await request.json();
     const { name, description } = body;
 
@@ -45,7 +48,7 @@ export async function PUT(
 
     const result = await executeQuery(
       "UPDATE categories SET name = ?, description = ? WHERE id = ?",
-      [name, description, params.id]
+      [name, description, id]
     );
 
     return NextResponse.json({ message: "Category updated successfully" });
@@ -60,12 +63,14 @@ export async function PUT(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
+    
     const result = await executeQuery(
       "DELETE FROM categories WHERE id = ?",
-      [params.id]
+      [id]
     );
 
     return NextResponse.json({ message: "Category deleted successfully" });

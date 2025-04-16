@@ -3,9 +3,11 @@ import { getDB, executeQuery } from "@/lib/db";
 
 export async function GET(
   request: Request,
-  { params }: { params: { danceId: string } }
+  { params }: { params: Promise<{ danceId: string }> }
 ) {
   try {
+    const { danceId } = await params;
+    
     const query = `
       SELECT 
         comments.*,
@@ -16,7 +18,7 @@ export async function GET(
       ORDER BY comments.created_at DESC;
     `;
 
-    const comments = await executeQuery(query, [params.danceId]);
+    const comments = await executeQuery(query, [danceId]);
 
     return NextResponse.json(comments);
   } catch (error) {
