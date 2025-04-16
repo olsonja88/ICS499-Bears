@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 
-const ChangePasswordForm = () => {
+// Component that uses useSearchParams
+const ChangePasswordFormContent = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const token = searchParams.get("token"); // Get token from URL
@@ -98,10 +99,9 @@ const ChangePasswordForm = () => {
             />
           </div>
 
-          {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-gray-800 text-white py-2 rounded-md hover:bg-gray-900 transition"
+            className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
             Reset Password
           </button>
@@ -121,6 +121,22 @@ const ChangePasswordForm = () => {
         </div>
       </div>
     </main>
+  );
+};
+
+// Loading fallback component
+const LoadingFallback = () => (
+  <div className="min-h-screen flex items-center justify-center">
+    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+  </div>
+);
+
+// Main component with Suspense boundary
+const ChangePasswordForm = () => {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <ChangePasswordFormContent />
+    </Suspense>
   );
 };
 
