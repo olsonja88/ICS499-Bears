@@ -1,19 +1,25 @@
 import { NextResponse } from "next/server";
-import { getDB } from "@/lib/db";
+import { getDB, executeQuerySingle } from "@/lib/db";
+
+// Define the correct type for the context parameter
+type RouteContext = {
+  params: {
+    id: string;
+  };
+};
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  context: RouteContext
 ) {
   try {
-    const { id } = params;
+    const { id } = context.params;
 
     if (!id) {
       return NextResponse.json({ error: "Country ID is required" }, { status: 400 });
     }
 
-    const db = await getDB();
-    const country = await db.get("SELECT * FROM countries WHERE id = ?", [id]);
+    const country = await executeQuerySingle("SELECT * FROM countries WHERE id = $1", [id]);
 
     if (!country) {
       return NextResponse.json({ error: "Country not found" }, { status: 404 });

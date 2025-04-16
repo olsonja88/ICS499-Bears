@@ -1,13 +1,20 @@
 import { NextResponse } from "next/server";
-import { getDB } from "@/lib/db";
+import { getDB, executeQuerySingle, executeQuery } from "@/lib/db";
 import { Dance } from "@/lib/types";
+
+// Define the correct type for the context parameter
+type RouteContext = {
+  params: {
+    name: string;
+  };
+};
 
 export async function GET(
   request: Request,
-  { params }: { params: { name: string } }
+  context: RouteContext
 ) {
   try {
-    if (!params || !params.name) {
+    if (!context.params || !context.params.name) {
       console.error("Missing country name parameter");
       return NextResponse.json(
         { error: "Country name is required" },
@@ -15,14 +22,12 @@ export async function GET(
       );
     }
 
-    const countryName = params.name;
+    const countryName = context.params.name;
     console.log(`Fetching dances for country: ${countryName}`);
     
-    const db = await getDB();
-    
     // First, get the country ID from the name
-    const countryQuery = `SELECT id FROM countries WHERE name = ?`;
-    const country = await db.get(countryQuery, [countryName]);
+    const countryQuery = `SELECT id FROM countries WHERE name = $1`;
+    const country = await executeQuerySingle(countryQuery, [countryName]);
     
     if (!country) {
       console.error(`Country not found: ${countryName}`);
@@ -50,30 +55,17 @@ export async function GET(
       LEFT JOIN categories ON dances.category_id = categories.id
       LEFT JOIN countries ON dances.country_id = countries.id
       LEFT JOIN media ON dances.media_id = media.id
-      WHERE dances.country_id = ?;
+      WHERE countries.id = $1
+      ORDER BY dances.created_at DESC;
     `;
-
-    const rows = await db.all(query, [country.id]);
-    console.log(`Found ${rows.length} dances for country ID ${country.id}`);
-
-    const dances: Dance[] = rows.map(row => ({
-      id: row.dance_id,
-      title: row.title,
-      description: row.description || "",
-      keywords: row.keywords || "",
-      category: row.category || "Unknown",
-      country: row.country || "Unknown",
-      categoryId: row.category_id || null,
-      countryId: row.country_id || null,
-      url: row.media_url || undefined,
-      createdBy: row.created_by?.toString() || undefined
-    }));
-
+    
+    const dances = await executeQuery(query, [country.id]);
+    
     return NextResponse.json(dances);
   } catch (error) {
-    console.error("Error fetching dances by country:", error);
+    console.error("Error fetching dances:", error);
     return NextResponse.json(
-      { error: "Database error", details: error },
+      { error: "Failed to fetch dances for this country" },
       { status: 500 }
     );
   }

@@ -1,13 +1,19 @@
 import { NextResponse } from "next/server";
-import { getDB } from "@/lib/db";
+import { getDB, executeQuerySingle } from "@/lib/db";
 import { Dance } from "@/lib/types";
+
+// Define the correct type for the context parameter
+type RouteContext = {
+  params: {
+    id: string;
+  };
+};
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  context: RouteContext
 ) {
   try {
-    const db = await getDB();
     const query = `SELECT 
       dances.id AS dance_id,
       dances.title,
@@ -20,16 +26,16 @@ export async function GET(
       media.id AS media_id,
       media.type AS media_type,
       media.url AS media_url,
-      media.uploaded_at AS media_uploaded_at,
+      media.created_at AS media_uploaded_at,
       categories.name AS category_name,
       countries.name AS country_name
       FROM dances
       LEFT JOIN media ON dances.media_id = media.id
       LEFT JOIN categories ON dances.category_id = categories.id
       LEFT JOIN countries ON dances.country_id = countries.id
-      WHERE dances.id = ?;`;
+      WHERE dances.id = $1;`;
 
-    const row = await db.get(query, [params.id]);
+    const row = await executeQuerySingle(query, [context.params.id]);
 
     if (!row) {
       return NextResponse.json(
