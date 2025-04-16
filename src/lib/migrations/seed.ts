@@ -10,7 +10,7 @@ async function seedPostgres() {
 
   try {
     // Read the seed data file
-    const seedPath = join(process.cwd(), 'src', 'lib', 'migrations', 'init.postgres.sql');
+    const seedPath = join(process.cwd(), 'src', 'lib', 'migrations', 'init.sql');
     const seedSQL = readFileSync(seedPath, 'utf8');
     
     // Split the SQL into individual statements
