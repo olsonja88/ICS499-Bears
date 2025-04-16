@@ -1,59 +1,32 @@
 import { NextResponse } from "next/server";
-import { getDB } from "@/lib/db";
+import { executeQuery, executeQueryRun } from "@/lib/db";
 import { Dance } from "@/lib/types";
 
 export async function GET() {
   try {
-    const db = await getDB();
     const query = `
-      SELECT 
-        dances.id AS dance_id,
-        dances.title,
-        dances.description,
-        dances.keywords,
-        categories.name AS category,
-        countries.name AS country,
-        dances.created_by,
-        dances.created_at,
-        media.url AS media_url
-      FROM dances
-      LEFT JOIN categories ON dances.category_id = categories.id
-      LEFT JOIN countries ON dances.country_id = countries.id
-      LEFT JOIN media ON dances.media_id = media.id;
+      SELECT d.*, c.name as category_name, co.name as country_name 
+      FROM dances d
+      LEFT JOIN categories c ON d.category_id = c.id
+      LEFT JOIN countries co ON d.country_id = co.id
     `;
-
-    const rows = await db.all(query);
-
-    const dances: Dance[] = rows.map(row => ({
-      id: row.dance_id,
-      title: row.title,
-      description: row.description || "",
-      keywords: row.keywords || "",
-      category: row.category || "Unknown",
-      country: row.country || "Unknown",
-      categoryId: row.category_id || null,
-      countryId: row.country_id || null,
-      url: row.media_url || undefined,
-      createdBy: row.created_by?.toString() || undefined
-    }));
-
-    return NextResponse.json(dances);
+    const rows = await executeQuery(query);
+    return NextResponse.json(rows);
   } catch (error) {
+    console.error("GET Dances Error:", error);
     return NextResponse.json(
-      { error: "Database error", details: error },
+      { error: "Database error, failed to fetch dances", details: error },
       { status: 500 }
     );
   }
 }
 
-
 export async function POST(request: Request) {
-  const db = await getDB();
   const body = await request.json();
   const { title, description, categoryId, countryId, createdBy } = body;
   
   try {
-    const result = await db.run(
+    const result = await executeQueryRun(
       `INSERT INTO dances (title, description, category_id, country_id, created_by) VALUES (?, ?, ?, ?, ?);`,
       [title, description, categoryId, countryId, createdBy]
     );
@@ -66,15 +39,15 @@ export async function POST(request: Request) {
       message: "Dance created successfully"
     });
   } catch (error) {
+    console.error("POST Dance Error:", error);
     return NextResponse.json(
-      { error: "Database error", details: error },
+      { error: "Database error, failed to create dance", details: error },
       { status: 500 }
     );
   }
 }
 
 export async function PUT(request: Request) {
-  const db = await getDB();
   const body = await request.json();
   const { 
     id, 
@@ -94,7 +67,7 @@ export async function PUT(request: Request) {
   }
   
   try {
-    const result = await db.run(
+    const result = await executeQueryRun(
       `UPDATE dances 
        SET title = ?, 
            description = ?, 
@@ -118,15 +91,15 @@ export async function PUT(request: Request) {
       message: "Dance replaced successfully"
     });
   } catch (error) {
+    console.error("PUT Dance Error:", error);
     return NextResponse.json(
-      { error: "Database error", details: error },
+      { error: "Database error, failed to update dance", details: error },
       { status: 500 }
     );
   }
 }
 
 export async function PATCH(request: Request) {
-  const db = await getDB();
   const body = await request.json();
   const { id, ...updates } = body;
   
@@ -168,7 +141,7 @@ export async function PATCH(request: Request) {
 
     values.push(id);
     const query = `UPDATE dances SET ${updateFields.join(', ')} WHERE id = ?;`;
-    const result = await db.run(query, values);
+    const result = await executeQueryRun(query, values);
 
     if (result.changes === 0) {
       return NextResponse.json(
@@ -182,20 +155,20 @@ export async function PATCH(request: Request) {
       message: "Dance updated successfully"
     });
   } catch (error) {
+    console.error("PATCH Dance Error:", error);
     return NextResponse.json(
-      { error: "Database error", details: error },
+      { error: "Database error, failed to update dance", details: error },
       { status: 500 }
     );
   }
 }
 
 export async function DELETE(request: Request) {
-  const db = await getDB();
   const body = await request.json();
   const { id } = body;
   
   try {
-    const result = await db.run(
+    const result = await executeQueryRun(
       `DELETE FROM dances WHERE id = ?;`,
       [id]
     );
@@ -212,8 +185,9 @@ export async function DELETE(request: Request) {
       message: "Dance deleted successfully"
     });
   } catch (error) {
+    console.error("DELETE Dance Error:", error);
     return NextResponse.json(
-      { error: "Database error", details: error },
+      { error: "Database error, failed to delete dance", details: error },
       { status: 500 }
     );
   }

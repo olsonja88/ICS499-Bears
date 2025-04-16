@@ -1,14 +1,14 @@
 import { NextResponse } from 'next/server';
-import { getDB } from '@/lib/db';
+import { executeQuery } from '@/lib/db';
 
 export async function GET() {
     try {
-        const db = await getDB();
-        const categories = await db.all("SELECT * FROM categories");
+        const categories = await executeQuery("SELECT * FROM categories");
         return NextResponse.json(categories);
     } catch (error) {
+        console.error("GET Categories Error:", error);
         return NextResponse.json(
-            {error: "Database error", details: error },
+            { error: "Database error, failed to fetch categories", details: error },
             { status: 500 }
         );
     }

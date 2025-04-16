@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import DanceCard from "@/components/dance-card";
 import { Dance } from "@/lib/types";
 
-const CountryDetails = () => {
+// Component that uses useSearchParams
+const CountryDetailsContent = () => {
   const [description, setDescription] = useState("");
   const [dances, setDances] = useState<Dance[]>([]);
   const [loading, setLoading] = useState(true);
@@ -100,54 +101,65 @@ const CountryDetails = () => {
         Dance Culture in {countryName?.replace(/_/g, " ")}
       </h1>
       
-      {loading && (
-        <div className="text-center">
-          <p>Loading...</p>
+      {loading ? (
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
         </div>
-      )}
-
-      {error && (
-        <div className="text-red-500">
-          <p>{error}</p>
+      ) : error ? (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+          <strong className="font-bold">Error: </strong>
+          <span className="block sm:inline">{error}</span>
         </div>
-      )}
-
-      {!loading && !error && (
+      ) : (
         <>
-          <div className="prose max-w-none mb-8">
-            <p className="whitespace-pre-line">{description}</p>
+          <div className="bg-white shadow-md rounded-lg p-6 mb-8">
+            <h2 className="text-xl font-semibold mb-4">About {countryName?.replace(/_/g, " ")}</h2>
+            <p className="text-gray-700 whitespace-pre-line">{description}</p>
             {lastUpdated && (
-              <p className="text-sm text-gray-500 mt-2">
-                Last updated: {new Date(lastUpdated).toLocaleString()}
-              </p>
+              <p className="text-xs text-gray-500 mt-4">Last updated: {new Date(lastUpdated).toLocaleDateString()}</p>
             )}
           </div>
           
-          {dances.length > 0 ? (
-            <>
-              <h2 className="text-2xl font-bold mb-4">Dances from {countryName?.replace(/_/g, " ")}</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {dances.map((dance) => (
-                  <DanceCard
-                    key={dance.id}
-                    id={dance.id.toString()}
-                    title={dance.title}
-                    description={dance.description}
-                    image={dance.url ?? "/placeholder.jpg"}
-                    country={dance.country}
-                    category={dance.category}
-                  />
-                ))}
-              </div>
-            </>
+          <h2 className="text-2xl font-bold mb-6">Dances from {countryName?.replace(/_/g, " ")}</h2>
+          
+          {dances.length === 0 ? (
+            <p className="text-gray-500">No dances found for this country.</p>
           ) : (
-            <div className="text-center mt-8">
-              <p>No dances found for this country.</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {dances.map((dance) => (
+                <DanceCard 
+                  key={dance.id} 
+                  id={dance.id.toString()}
+                  title={dance.title}
+                  description={dance.description}
+                  image={dance.url ?? "/placeholder.jpg"}
+                  country={dance.country}
+                  category={dance.category}
+                />
+              ))}
             </div>
           )}
         </>
       )}
     </div>
+  );
+};
+
+// Loading fallback component
+const LoadingFallback = () => (
+  <div className="container mx-auto px-4 py-8">
+    <div className="flex justify-center items-center h-64">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+    </div>
+  </div>
+);
+
+// Main component with Suspense boundary
+const CountryDetails = () => {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <CountryDetailsContent />
+    </Suspense>
   );
 };
 

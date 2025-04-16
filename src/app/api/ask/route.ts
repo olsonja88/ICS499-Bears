@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getDB } from "@/lib/db";
+import { getDB, executeQuerySingle, executeQueryRun } from "@/lib/db";
 import jwt from "jsonwebtoken";
 
 // LangChain imports
@@ -102,8 +102,6 @@ export async function POST(req: Request) {
 
         if (userRole === "admin" && sqlQueries.length > 0) {
             try {
-                const db = await getDB();
-
                 for (const sqlQuery of sqlQueries) {
                     const queries = sqlQuery.split(";").filter(q => q.trim());
 
@@ -111,7 +109,12 @@ export async function POST(req: Request) {
                     const danceTitle = danceMatch ? danceMatch[1] : null;
 
                     if (danceTitle) {
-                        const existingDance = await db.get(`SELECT id FROM dances WHERE title = ?`, [danceTitle]);
+                        // Use the helper function instead of direct db access
+                        const existingDance = await executeQuerySingle(
+                            `SELECT id FROM dances WHERE title = ?`, 
+                            [danceTitle]
+                        );
+                        
                         if (existingDance) {
                             dbResponse = ` Dance \"${danceTitle}\" already exists in the database.`;
                             continue;
@@ -120,7 +123,8 @@ export async function POST(req: Request) {
 
                     for (const query of queries) {
                         console.log(" Running query:", query);
-                        await db.run(query.trim());
+                        // Use the helper function instead of direct db access
+                        await executeQueryRun(query.trim());
                     }
 
                     dbResponse = ` Successfully inserted dance: ${danceTitle}.`;

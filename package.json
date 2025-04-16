@@ -7,7 +7,10 @@
     "migrate:win": "(if exist dev.db del dev.db) && (if not exist dev.db sqlite3 dev.db \"VACUUM;\") && sqlite3 dev.db < src/lib/migrations/init.sql",
     "migrate:unix": "(test -f dev.db && rm dev.db || echo 'No existing DB') && (test -f dev.db || sqlite3 dev.db \"VACUUM;\") && sqlite3 dev.db < src/lib/migrations/init.sql",
     "migrate": "npm run migrate:win || npm run migrate:unix",
-    "build": "next build",
+    "migrate:postgres": "ts-node src/lib/migrations/migrate.ts",
+    "seed:postgres": "ts-node src/lib/migrations/seed.ts",
+    "reset:postgres": "ts-node src/lib/migrations/reset.ts",
+    "build": "DISABLE_ESLINT_PLUGIN=true next build",
     "start": "next start",
     "lint": "next lint"
   },
@@ -16,6 +19,7 @@
     "@langchain/core": "^0.3.43",
     "@langchain/google-genai": "^0.2.0",
     "@types/leaflet": "^1.9.17",
+    "@types/pg": "^8.11.13",
     "@types/react-router-dom": "^5.3.3",
     "axios": "^1.7.9",
     "bcrypt": "^5.1.1",
@@ -35,6 +39,7 @@
     "mysql2": "^3.12.0",
     "next": "^15.2.4",
     "nodemailer": "^6.10.0",
+    "pg": "^8.14.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-leaflet": "^5.0.0",
@@ -63,6 +68,7 @@
     "eslint-config-next": "15.1.6",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
+    "ts-node": "^10.9.2",
     "typescript": "^5"
   }
 }

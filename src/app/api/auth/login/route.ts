@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getDB } from "@/lib/db";
+import { executeQuerySingle } from "@/lib/db";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -16,8 +16,10 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: "Username and password are required" }, { status: 400 });
       }
   
-      const db = await getDB();
-      const user = await db.get("SELECT id, username, password_hash, role FROM users WHERE username = ?", [username]);
+      const user = await executeQuerySingle(
+        "SELECT id, username, password_hash, role FROM users WHERE username = ?", 
+        [username]
+      );
   
       if (!user) {
         return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });

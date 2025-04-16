@@ -16,7 +16,7 @@ export default function DancePage() {
   useEffect(() => {
     async function fetchDances() {
       try {
-        const res = await fetch("http://localhost:3000/api/dance");
+        const res = await fetch("/api/dance");
         if (!res.ok) throw new Error("Failed to fetch");
         const data = await res.json();
         setDances(data);

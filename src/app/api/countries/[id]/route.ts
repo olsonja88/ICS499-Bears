@@ -1,19 +1,18 @@
 import { NextResponse } from "next/server";
-import { getDB } from "@/lib/db";
+import { getDB, executeQuerySingle } from "@/lib/db";
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     if (!id) {
       return NextResponse.json({ error: "Country ID is required" }, { status: 400 });
     }
 
-    const db = await getDB();
-    const country = await db.get("SELECT * FROM countries WHERE id = ?", [id]);
+    const country = await executeQuerySingle("SELECT * FROM countries WHERE id = $1", [id]);
 
     if (!country) {
       return NextResponse.json({ error: "Country not found" }, { status: 404 });
@@ -21,8 +20,9 @@ export async function GET(
 
     return NextResponse.json(country);
   } catch (error) {
+    console.error("Error fetching country:", error);
     return NextResponse.json(
-      { error: "Database error", details: error },
+      { error: "Failed to fetch country" },
       { status: 500 }
     );
   }

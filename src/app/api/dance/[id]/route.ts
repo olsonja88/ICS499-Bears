@@ -1,13 +1,14 @@
 import { NextResponse } from "next/server";
-import { getDB } from "@/lib/db";
+import { getDB, executeQuerySingle } from "@/lib/db";
 import { Dance } from "@/lib/types";
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const db = await getDB();
+    const { id } = await params;
+    
     const query = `SELECT 
       dances.id AS dance_id,
       dances.title,
@@ -20,16 +21,16 @@ export async function GET(
       media.id AS media_id,
       media.type AS media_type,
       media.url AS media_url,
-      media.uploaded_at AS media_uploaded_at,
+      media.created_at AS media_uploaded_at,
       categories.name AS category_name,
       countries.name AS country_name
       FROM dances
       LEFT JOIN media ON dances.media_id = media.id
       LEFT JOIN categories ON dances.category_id = categories.id
       LEFT JOIN countries ON dances.country_id = countries.id
-      WHERE dances.id = ?;`;
+      WHERE dances.id = $1;`;
 
-    const row = await db.get(query, [params.id]);
+    const row = await executeQuerySingle(query, [id]);
 
     if (!row) {
       return NextResponse.json(
@@ -53,8 +54,9 @@ export async function GET(
 
     return NextResponse.json(dance);
   } catch (error) {
+    console.error("Error fetching dance:", error);
     return NextResponse.json(
-      { error: "Database error", details: error },
+      { error: "Failed to fetch dance" },
       { status: 500 }
     );
   }

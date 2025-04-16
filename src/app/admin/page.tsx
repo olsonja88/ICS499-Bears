@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import UserList from "@/components/userlist";
 import DanceList from "@/components/DanceList";
 
-export default function AdminPage() {
+// Component that uses useSearchParams
+const AdminPageContent = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [isAdmin, setIsAdmin] = useState(false);
     const [activeTab, setActiveTab] = useState<'users' | 'dances'>('users');
@@ -91,5 +92,21 @@ export default function AdminPage() {
                 </div>
             </div>
         </div>
+    );
+};
+
+// Loading fallback component
+const LoadingFallback = () => (
+    <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+    </div>
+);
+
+// Main component with Suspense boundary
+export default function AdminPage() {
+    return (
+        <Suspense fallback={<LoadingFallback />}>
+            <AdminPageContent />
+        </Suspense>
     );
 }

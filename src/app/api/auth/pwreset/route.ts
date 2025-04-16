@@ -1,16 +1,14 @@
 import { NextResponse } from "next/server";
-import { getDB } from "@/lib/db";
+import { executeQuerySingle } from "@/lib/db";
 import jwt from "jsonwebtoken";
 import { sendEmail } from "@/lib/sendemail";
-import { Database } from "sqlite";
 
 export async function POST(req: Request) {
     try {
         const { email } = await req.json();
-        const db: Database = await getDB();
 
         // Check if user exists
-        const user = await db.get("SELECT id FROM users WHERE email = ?", [email]);
+        const user = await executeQuerySingle("SELECT id FROM users WHERE email = ?", [email]);
         if (!user) {
             return NextResponse.json(
                 { message: "If this email exists, a reset link has been sent." },

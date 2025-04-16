@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getDB } from "@/lib/db";
+import { executeQuerySingle, executeQueryRun } from "@/lib/db";
 
 export async function POST(request: Request) {
   try {
@@ -12,11 +12,9 @@ export async function POST(request: Request) {
       );
     }
     
-    const db = await getDB();
-    
     // First, get the country ID from the name
     const countryQuery = `SELECT id FROM countries WHERE name = ?`;
-    const country = await db.get(countryQuery, [countryName]);
+    const country = await executeQuerySingle(countryQuery, [countryName]);
     
     if (!country) {
       return NextResponse.json(
@@ -27,17 +25,17 @@ export async function POST(request: Request) {
     
     // Check if a description already exists for this country
     const existingQuery = `SELECT id FROM country_descriptions WHERE country_id = ?`;
-    const existing = await db.get(existingQuery, [country.id]);
+    const existing = await executeQuerySingle(existingQuery, [country.id]);
     
     if (existing) {
       // Update the existing description
-      await db.run(
+      await executeQueryRun(
         `UPDATE country_descriptions SET description = ?, last_updated = CURRENT_TIMESTAMP WHERE country_id = ?`,
         [description, country.id]
       );
     } else {
       // Insert a new description
-      await db.run(
+      await executeQueryRun(
         `INSERT INTO country_descriptions (country_id, description) VALUES (?, ?)`,
         [country.id, description]
       );
@@ -68,11 +66,9 @@ export async function GET(request: Request) {
       );
     }
     
-    const db = await getDB();
-    
     // Get the country ID from the name
     const countryQuery = `SELECT id FROM countries WHERE name = ?`;
-    const country = await db.get(countryQuery, [countryName]);
+    const country = await executeQuerySingle(countryQuery, [countryName]);
     
     if (!country) {
       return NextResponse.json(
@@ -87,7 +83,7 @@ export async function GET(request: Request) {
       FROM country_descriptions 
       WHERE country_id = ?
     `;
-    const description = await db.get(descriptionQuery, [country.id]);
+    const description = await executeQuerySingle(descriptionQuery, [country.id]);
     
     if (!description) {
       return NextResponse.json(

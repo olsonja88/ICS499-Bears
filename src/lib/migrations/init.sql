@@ -1,6 +1,6 @@
 -- Users Table
 CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id SERIAL PRIMARY KEY,
     username TEXT UNIQUE NOT NULL,
     email TEXT UNIQUE NOT NULL,
     password_hash TEXT NOT NULL,
@@ -10,14 +10,14 @@ CREATE TABLE IF NOT EXISTS users (
 
 -- Categories Table
 CREATE TABLE IF NOT EXISTS categories (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id SERIAL PRIMARY KEY,
     name TEXT UNIQUE NOT NULL,
     description TEXT
 );
 
 -- Countries Table
 CREATE TABLE IF NOT EXISTS countries (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id SERIAL PRIMARY KEY,
     name TEXT UNIQUE NOT NULL,
     code TEXT UNIQUE NOT NULL,
     lat REAL NOT NULL,
@@ -26,16 +26,24 @@ CREATE TABLE IF NOT EXISTS countries (
 
 -- Country Descriptions Table (for Google Gemini responses)
 CREATE TABLE IF NOT EXISTS country_descriptions (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id SERIAL PRIMARY KEY,
     country_id INTEGER UNIQUE NOT NULL,
     description TEXT NOT NULL,
     last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (country_id) REFERENCES countries(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+-- Media Table (Videos, Images)
+CREATE TABLE IF NOT EXISTS media (
+    id SERIAL PRIMARY KEY,
+    url TEXT NOT NULL,
+    type TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Dances Table
 CREATE TABLE IF NOT EXISTS dances (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id SERIAL PRIMARY KEY,
     title TEXT NOT NULL,
     description TEXT,
     keywords TEXT,
@@ -48,15 +56,6 @@ CREATE TABLE IF NOT EXISTS dances (
     FOREIGN KEY (country_id) REFERENCES countries(id) ON DELETE SET NULL ON UPDATE CASCADE,
     FOREIGN KEY (media_id) REFERENCES media(id) ON DELETE SET NULL ON UPDATE CASCADE,
     FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
-);
-
-
--- Media Table (Videos, Images)
-CREATE TABLE IF NOT EXISTS media (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    type TEXT CHECK(type IN ('image', 'video')) NOT NULL,
-    url TEXT NOT NULL,
-    uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Comments Table
@@ -321,18 +320,18 @@ INSERT INTO media (type, url) VALUES
 
 -- Insert sample dances
 INSERT INTO dances (title, description, category_id, country_id, media_id, created_by) VALUES
-('Swan Lake', 'A hallmark of classical ballet, Swan Lake is a romantic tale of tragic love, performed with precision and elegance. The choreography demands both technical mastery and emotional depth, with dancers portraying swans gliding across the stage with ethereal grace. Tchaikovsky’s iconic score swells beneath dramatic leaps, delicate pirouettes, and synchronized corps de ballet formations. The white swan, Odette, and the black swan, Odile, showcase stark contrast in character through movement — purity and melancholy versus seduction and cunning.', 1, 61, 1, 2), -- 1 france
-('Dock Dance', 'Set on a weathered wooden dock near a shimmering lake, this contemporary freestyle piece blends breakdance footwork, hip-hop isolations, and rhythmic splashes with the serenity of nature. The dance uses the environment interactively — boards creak under foot, the water reflects the dancer’s motions, and seagulls punctuate transitions. Light foot taps mimic the sound of water dripping, while sudden freezes and body rolls give the illusion of riding the tide. It’s equal parts meditative and rebellious.', 7, 187, 10, 3), -- 2 usa
+('Swan Lake', 'A hallmark of classical ballet, Swan Lake is a romantic tale of tragic love, performed with precision and elegance. The choreography demands both technical mastery and emotional depth, with dancers portraying swans gliding across the stage with ethereal grace. Tchaikovskys iconic score swells beneath dramatic leaps, delicate pirouettes, and synchronized corps de ballet formations. The white swan, Odette, and the black swan, Odile, showcase stark contrast in character through movement — purity and melancholy versus seduction and cunning.', 1, 61, 1, 2), -- 1 france
+('Dock Dance', 'Set on a weathered wooden dock near a shimmering lake, this contemporary freestyle piece blends breakdance footwork, hip-hop isolations, and rhythmic splashes with the serenity of nature. The dance uses the environment interactively — boards creak under foot, the water reflects the dancers motions, and seagulls punctuate transitions. Light foot taps mimic the sound of water dripping, while sudden freezes and body rolls give the illusion of riding the tide. Its equal parts meditative and rebellious.', 7, 187, 10, 3), -- 2 usa
 ('Street Popping', 'Street Popping is a funk-inspired dance style that emphasizes sharp contractions and smooth isolations. Dancers "pop" their muscles in rhythm to electric beats, creating a pulsating, robotic illusion. Movements alternate between fluid waves traveling through limbs and abrupt hits synced with basslines. Often performed in urban environments with graffiti backdrops and boomboxes blaring, this routine captures the essence of 1980s hip-hop battles — full of attitude, style, and freestyle expression.', 2, 187, 2, 5), -- usa
 ('Salsa Explosion', 'A vibrant and high-energy Latin dance, Salsa Explosion erupts with swift spins, body rolls, and sizzling footwork. Dancers twist, dip, and syncopate in tandem with upbeat Afro-Caribbean percussion. The choreography seamlessly shifts between tight partner work and expressive solo shines. With bold hip movements, rapid turns, and flirtatious eye contact, this performance is as much a celebration of connection as it is of rhythm. Bright costumes and contagious smiles heighten the electric atmosphere.', 3, 7, 3, 3), -- 3 argentina
 ('Los Muertos', 'Rooted in the traditions of Día de los Muertos, Los Muertos fuses folkloric Mexican dance with theatrical storytelling. Dancers adorned with calavera (skull) face paint and colorful marigolds move solemnly at first, honoring spirits through slow, grounded steps. As the tempo rises, so do their feet — with stomps, spins, and skirt flourishes evoking the joy of remembering loved ones. The performance blends reverence with celebration, embracing life and death in a heartfelt spectacle.', 10, 7, 11, 4), -- 4 argentina 
-('Passionate Tango', 'This sensual Argentine tango is fueled by tension, drama, and fiery intimacy. The dancers are locked in a tight embrace, moving as one entity across the stage with stalking steps and sharp flicks. Their gazes never break, communicating power dynamics and desire. Intricate leg entwines (ganchos), quick pivots (ochos), and sudden pauses build anticipation. The music’s bandoneón-driven pulse drives a choreography that tells a story of attraction, betrayal, and irresistible chemistry.', 4, 7, 4, 4), -- 5 argentina
-('Broadway Jazz', 'Glamorous and theatrical, Broadway Jazz blends jazz dance technique with stage performance flair. The choreography features high kicks, shoulder rolls, and sassy struts — all exaggerated for the audience. Set to big-band show tunes or musical theater classics, dancers embody characters with over-the-top expressions and dramatic flair. Think Fosse-style isolation mixed with chorus-line unity, all shimmering under spotlight and sequins. It’s bold, bright, and brimming with showbiz energy.', 5, 187, 5, 6), -- 6 usa
+('Passionate Tango', 'This sensual Argentine tango is fueled by tension, drama, and fiery intimacy. The dancers are locked in a tight embrace, moving as one entity across the stage with stalking steps and sharp flicks. Their gazes never break, communicating power dynamics and desire. Intricate leg entwines (ganchos), quick pivots (ochos), and sudden pauses build anticipation. The musics bandoneón-driven pulse drives a choreography that tells a story of attraction, betrayal, and irresistible chemistry.', 4, 7, 4, 4), -- 5 argentina
+('Broadway Jazz', 'Glamorous and theatrical, Broadway Jazz blends jazz dance technique with stage performance flair. The choreography features high kicks, shoulder rolls, and sassy struts — all exaggerated for the audience. Set to big-band show tunes or musical theater classics, dancers embody characters with over-the-top expressions and dramatic flair. Think Fosse-style isolation mixed with chorus-line unity, all shimmering under spotlight and sequins. Its bold, bright, and brimming with showbiz energy.', 5, 187, 5, 6), -- 6 usa
 ('Modern Flow', 'This contemporary-modern fusion emphasizes emotional storytelling through continuous motion. Modern Flow explores themes of release, resistance, and rebirth. Dancers sweep across the floor with grounded contractions, reaching lifts, and moments of suspension that defy gravity. Movements often emerge organically from breath, with an improvisational feel. Floorwork connects them to the earth, while spirals and weight shifts showcase vulnerability and strength. The mood is introspective, intimate, and deeply expressive.', 6, 78, 6, 7), -- 7 india
-('B-boy Battle', 'A raw and explosive street dance, B-boy Battle is a showdown of strength, style, and swagger. Dancers throw down dynamic power moves like windmills, flares, and headspins, interspersed with stylized top rocks and creative freezes. It’s as much about originality as athleticism — each performer injects their personality into their set. The atmosphere is charged with energy, as crowds cheer and beatboxers fuel the rhythm. The ground becomes the canvas for gravity-defying artistry.', 7, 187, 7, 8), -- 8 usa
-('Flamenco Fiesta', 'A passionate Spanish folk dance, Flamenco Fiesta blends percussive footwork, intricate hand gestures (floreo), and intense emotion. Dancers strike poses with proud posture, stamping rhythmic patterns (zapateado) in dialogue with live guitar and clapping (palmas). Voluminous dresses twirl dramatically with each spin, while shawls and castanets accentuate the dancer’s expression. Flamenco’s spirit is fierce — channeling joy, sorrow, and defiance through every stomp and stare.', 8, 165, 8, 9), -- 9 spain
-('Swing Revival', 'Set to upbeat jazz and big band swing, Swing Revival reimagines vintage partner dancing with a modern twist. Dancers perform fast-paced Lindy Hop steps, Charleston kicks, and aerial lifts that harken back to the 1940s jitterbug era. It’s playful, fast, and full of personality — with couples breaking apart and reuniting in time with the brass section’s blast. The vibe is retro cool: suspenders, slicked-back hair, polka dots, and boundless energy.', 9, 187, 9, 10), -- 10 usa 
-('Warehouse Breakdancing', 'In a gritty, industrial space with exposed brick and flickering fluorescent lights, dancers take over the warehouse with raw breakdancing power. Echoes of boom bap and reverb-rich beats guide them through windmills, air flares, and elbow freezes. The dust kicks up beneath their moves, spotlighting acrobatic solos and synchronized group routines. The setting adds weight to their defiance — transforming urban decay into a stage for creativity and rebellion.', 7, 187, 12, 11); -- 11 usa
+('B-boy Battle', 'A raw and explosive street dance, B-boy Battle is a showdown of strength, style, and swagger. Dancers throw down dynamic power moves like windmills, flares, and headspins, interspersed with stylized top rocks and creative freezes. Its as much about originality as athleticism — each performer injects their personality into their set. The atmosphere is charged with energy, as crowds cheer and beatboxers fuel the rhythm. The ground becomes the canvas for gravity-defying artistry.', 7, 187, 7, 8), -- 8 usa
+('Flamenco Fiesta', 'A passionate Spanish folk dance, Flamenco Fiesta blends percussive footwork, intricate hand gestures (floreo), and intense emotion. Dancers strike poses with proud posture, stamping rhythmic patterns (zapateado) in dialogue with live guitar and clapping (palmas). Voluminous dresses twirl dramatically with each spin, while shawls and castanets accentuate the dancers expression. Flamencos spirit is fierce — channeling joy, sorrow, and defiance through every stomp and stare.', 8, 165, 8, 9), -- 9 spain
+('Swing Revival', 'Set to upbeat jazz and big band swing, Swing Revival reimagines vintage partner dancing with a modern twist. Dancers perform fast-paced Lindy Hop steps, Charleston kicks, and aerial lifts that harken back to the 1940s jitterbug era. Its playful, fast, and full of personality — with couples breaking apart and reuniting in time with the brass sections blast. The vibe is retro cool: suspenders, slicked-back hair, polka dots, and boundless energy.', 9, 187, 9, 10), -- 10 usa 
+('Warehouse Breakdancing', 'In a gritty, industrial space with exposed brick and flickering fluorescent lights, dancers take over the warehouse with raw breakdancing power. Echoes of boom bap and reverb-rich beats guide them through windmills, air flares, and elbow freezes. The dust kicks up beneath their moves, spotlighting acrobatic solos and synchronized group routines. The setting adds weight to their defiance — transforming urban decay into a stage for creativity and rebellion.', 7, 187, 12, 2); -- 11 usa
 
 
 -- Insert sample comments
