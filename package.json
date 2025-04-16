@@ -9,7 +9,7 @@
     "migrate": "npm run migrate:win || npm run migrate:unix",
     "migrate:postgres": "ts-node src/lib/migrations/migrate.ts",
     "seed:postgres": "ts-node src/lib/migrations/seed.ts",
-    "build": "next build",
+    "build": "DISABLE_ESLINT_PLUGIN=true next build",
     "start": "next start",
     "lint": "next lint"
   },

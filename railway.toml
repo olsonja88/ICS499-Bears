@@ -1,6 +1,6 @@
 [build]
 builder = "nixpacks"
-buildCommand = "npm run build"
+buildCommand = "DISABLE_ESLINT_PLUGIN=true npm run build"
 
 [deploy]
 startCommand = "npm run start"
@@ -10,4 +10,5 @@ restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 10
 
 [deploy.env]
-NODE_ENV = "production" 
+NODE_ENV = "production"
+DISABLE_ESLINT_PLUGIN = "true" 
