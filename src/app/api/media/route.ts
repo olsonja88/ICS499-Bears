@@ -1,14 +1,14 @@
 import { NextResponse } from 'next/server';
-import { getDB } from '@/lib/db';
+import { executeQuery } from '@/lib/db';
 
 export async function GET() {
     try {
-        const db = await getDB();
-        const media = await db.all("SELECT * FROM media");
+        const media = await executeQuery("SELECT * FROM media");
         return NextResponse.json(media);
     } catch (error) {
+        console.error("GET Media Error:", error);
         return NextResponse.json(
-            {error: "Database error", details: error },
+            { error: "Database error, failed to fetch media", details: error },
             { status: 500 }
         );
     }
