@@ -2,16 +2,9 @@ import { NextResponse } from "next/server";
 import { getDB, executeQuerySingle } from "@/lib/db";
 import { Dance } from "@/lib/types";
 
-// Define the correct type for the context parameter
-type RouteContext = {
-  params: {
-    id: string;
-  };
-};
-
 export async function GET(
   request: Request,
-  context: RouteContext
+  { params }: { params: { id: string } }
 ) {
   try {
     const query = `SELECT 
@@ -35,7 +28,7 @@ export async function GET(
       LEFT JOIN countries ON dances.country_id = countries.id
       WHERE dances.id = $1;`;
 
-    const row = await executeQuerySingle(query, [context.params.id]);
+    const row = await executeQuerySingle(query, [params.id]);
 
     if (!row) {
       return NextResponse.json(

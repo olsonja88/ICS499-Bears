@@ -1,44 +1,36 @@
 import { NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { getDB } from "@/lib/db";
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
-
-// Define the correct type for the context parameter
-type RouteContext = {
-  params: {
-    name: string;
-  };
-};
+// Initialize the Google Generative AI client
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY || "");
 
 export async function GET(
   request: Request,
-  context: RouteContext
+  { params }: { params: { name: string } }
 ) {
   try {
-    if (!context.params) {
-      return NextResponse.json({ error: "Route parameters not available" }, { status: 400 });
+    if (!params.name) {
+      return NextResponse.json(
+        { error: "Country name is required" },
+        { status: 400 }
+      );
     }
 
-    const { name } = context.params;
+    // Get the model
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
-    if (!name) {
-      return NextResponse.json({ error: "Country name is required" }, { status: 400 });
-    }
-
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
-
-    const prompt = `Please tell me about dances and dance culture in ${name}, please be thorough.`;
-    const result = await model.generateContent(prompt);
+    // Generate content
+    const result = await model.generateContent(
+      `Tell me about the traditional dance of ${params.name}.`
+    );
     const response = await result.response;
     const text = response.text();
 
-    return NextResponse.json({ description: text });
-
+    return NextResponse.json({ content: text });
   } catch (error) {
-    console.error("Error:", error);
+    console.error("Error generating content:", error);
     return NextResponse.json(
-      { error: "Failed to get country dance information" },
+      { error: "Failed to generate content" },
       { status: 500 }
     );
   }

@@ -1,19 +1,12 @@
 import { NextResponse } from "next/server";
 import { getDB, executeQuerySingle } from "@/lib/db";
 
-// Define the correct type for the context parameter
-type RouteContext = {
-  params: {
-    id: string;
-  };
-};
-
 export async function GET(
   request: Request,
-  context: RouteContext
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = context.params;
+    const { id } = params;
 
     if (!id) {
       return NextResponse.json({ error: "Category ID is required" }, { status: 400 });
