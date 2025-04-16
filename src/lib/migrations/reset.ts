@@ -2,19 +2,19 @@ import { Pool } from 'pg';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 
-async function seedPostgres() {
+async function resetPostgres() {
   const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
   });
 
   try {
-    // Read the seed data file
-    const seedPath = join(process.cwd(), 'src', 'lib', 'migrations', 'init.postgres.sql');
-    const seedSQL = readFileSync(seedPath, 'utf8');
+    // Read the reset file
+    const resetPath = join(process.cwd(), 'src', 'lib', 'migrations', 'reset.sql');
+    const resetSQL = readFileSync(resetPath, 'utf8');
     
     // Split the SQL into individual statements
-    const statements = seedSQL
+    const statements = resetSQL
       .split(';')
       .map(statement => statement.trim())
       .filter(statement => statement.length > 0);
@@ -27,9 +27,9 @@ async function seedPostgres() {
       }
     }
     
-    console.log('PostgreSQL seeding completed successfully');
+    console.log('PostgreSQL reset completed successfully');
   } catch (error) {
-    console.error('PostgreSQL seeding failed:', error);
+    console.error('PostgreSQL reset failed:', error);
     throw error;
   } finally {
     await pool.end();
@@ -38,7 +38,7 @@ async function seedPostgres() {
 
 // Only run if this file is executed directly
 if (require.main === module) {
-  seedPostgres()
+  resetPostgres()
     .then(() => process.exit(0))
     .catch((error) => {
       console.error(error);
